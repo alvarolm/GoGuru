@@ -16,7 +16,7 @@ DEV = True
 PluginPath = sublime.packages_path()+'/GoGuru/'
 
 # load shellenv
-sys.path.append(PluginPath+"/deps/shellenv/all")
+sys.path.append(PluginPath+"/dep/")
 import shellenv
 
 def log(*msg):
