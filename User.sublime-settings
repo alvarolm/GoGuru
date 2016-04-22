@@ -1,5 +1,5 @@
 {
-	// env overwriters the default shell environment vars
+	// env overwrites the default shell environment vars
 	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
 	"env": {},
 

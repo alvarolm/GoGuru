@@ -2,7 +2,7 @@
 	// Please fo not edit this file, instead use: User.sublime-settings
 	// located at the same directory.
 
-	// env is a map that overwriters the default shell environment vars
+	// env overwrites the default shell environment vars
 	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
 	"env": {},
 

@@ -39,11 +39,11 @@ Oracle has several variables to be set in order to work. These are explained in 
 
 ```javascript
 {
-	// env is a map that overwriters the default environment vars
+	// env overwrites the default shell environment vars
 	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
 	"env": {},
 
-	// use_current_package adds to the guru_scope the current directory where the file is
+	// use_current_package adds to the guru_scope the current package of the the working file
 	"use_current_package" : true,
 
 	// guru_scope is an array of scopes of analysis for guru.
@@ -56,7 +56,10 @@ Oracle has several variables to be set in order to work. These are explained in 
 	// The output can either be one of: 'buffer', 'output_panel'
 	// Buffers can hold results from more than one invocation
 	// Output panels sit underneath the editor area and are easily dismissed
-	"output": "output_panel"
+	"output": "output_panel",
+
+	// print debug info to the terminal
+	"debug": true
 }
 ```
 You set your own variables in `Preferences > Package Settings > GoGuru > Settings-User`.
