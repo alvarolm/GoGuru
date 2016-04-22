@@ -3,7 +3,7 @@
 	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
 	"env": {},
 
-	// use_current_package adds to the guru_scope the current directory where the file is
+	// use_current_package adds to the guru_scope the current package of the the working file
 	"use_current_package" : true,
 
 	// guru_scope is an array of scopes of analysis for guru.
@@ -16,5 +16,8 @@
 	// The output can either be one of: 'buffer', 'output_panel'
 	// Buffers can hold results from more than one invocation
 	// Output panels sit underneath the editor area and are easily dismissed
-	"output": "output_panel"
+	"output": "output_panel",
+
+	// print debug info to the terminal
+	"debug": false
 }

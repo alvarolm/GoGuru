@@ -13,7 +13,11 @@ import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys, shell
 DEBUG = False
 VERSION = ''
 DEV = True
+PluginPath = sublime.packages_path()+'/GoGuru/'
 
+# load shellenv
+sys.path.append(PluginPath+"/deps/shellenv/all")
+import shellenv
 
 def log(*msg):
     print("GoGuru:", msg[0:])
