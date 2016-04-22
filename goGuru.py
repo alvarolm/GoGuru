@@ -8,7 +8,7 @@ It depends on the guru tool being installed:
 go get golang.org/x/tools/cmd/guru
 """
 
-import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys, shellenv
+import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
 
 DEBUG = False
 VERSION = ''
