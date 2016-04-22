@@ -1,9 +1,23 @@
 {
-	// Example settings. Replace these with your own.
-	// "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"],
-	// "guru_format": "",
-	// "env": { "GOPATH": "/home/alvarolm/dev/globaldep/go/godev",
-	//		"GOROOT": "/home/alvarolm/dev/globaldep/go/godist"},
-	"debug": true,
+	// env overwriters the default shell environment vars
+	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
+	"env": {},
+
+	// use_current_package adds to the guru_scope the current package of the the working file
+	"use_current_package" : true,
+
+	// guru_scope is an array of scopes of analysis for guru.
+	// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]
+	"guru_scope": [],
+
+	// The format of guru's output can be one of: 'json', 'xml' or 'plain'
+	"guru_format": "plain",
+
+	// The output can either be one of: 'buffer', 'output_panel'
+	// Buffers can hold results from more than one invocation
+	// Output panels sit underneath the editor area and are easily dismissed
 	"output": "output_panel",
+
+	// print debug info to the terminal
+	"debug": true
 }
