@@ -13,8 +13,8 @@
 	// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]
 	"guru_scope": [],
 
-	// The format of guru's output can be one of: 'json', 'xml' or 'plain'
-	"guru_format": "plain",
+	// Set guru's output to json
+	"guru_json": false,
 
 	// The output can either be one of: 'buffer', 'output_panel'
 	// Buffers can hold results from more than one invocation

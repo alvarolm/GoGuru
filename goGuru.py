@@ -179,11 +179,15 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         if len(guru_scope) > 0:
             guru_scope = "-scope "+guru_scope
 
+        guru_json = ""
+        if get_setting("guru_json", False):
+            guru_json = "-json"
+
         # Build guru cmd.
-        cmd = "guru %(scope)s -format=%(output_format)s %(mode)s %(file_path)s:%(pos)s" % {
+        cmd = "guru %(scope)s %(guru_json)s %(mode)s %(file_path)s:%(pos)s" % {
         "file_path": file_path,
         "pos": pos,
-        "output_format": get_setting("guru_format"),
+        "guru_json": guru_json,
         "mode": mode,
         "scope": guru_scope} 
         debug("cmd", cmd)
