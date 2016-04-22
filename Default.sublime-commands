@@ -1,0 +1,133 @@
+[
+    {
+        "caption": "GoGuru",
+        "command": "go_guru"
+    },
+    {
+        "caption": "GoGuru: Show Results",
+        "command": "go_guru_show_results"
+    },
+    {
+        "caption": "GoGuru: User Settings",
+        "command": "open_file",
+        "args": {
+            "file": "${packages}/GoGuru/User.sublime-settings"
+        }
+    },
+    {
+        "caption": "GoGuru: callees",
+        "command": "go_guru",
+        "args": {
+            "mode": "callees"
+        }
+    },
+    {
+        "caption": "GoGuru: callers",
+        "command": "go_guru",
+        "args": {
+            "mode": "callers"
+        }
+    },
+    {
+        "caption": "GoGuru: callstack",
+        "command": "go_guru",
+        "args": {
+            "mode": "callstack"
+        }
+    },
+    {
+        "caption": "GoGuru: definition",
+        "command": "go_guru",
+        "args": {
+            "mode": "definition"
+        }
+    },
+    {
+        "caption": "GoGuru: describe",
+        "command": "go_guru",
+        "args": {
+            "mode": "describe"
+        }
+    },
+    {
+        "caption": "GoGuru: freevars",
+        "command": "go_guru",
+        "args": {
+            "mode": "freevars"
+        }
+    },
+    {
+        "caption": "GoGuru: implements",
+        "command": "go_guru",
+        "args": {
+            "mode": "implements"
+        }
+    },
+    {
+        "caption": "GoGuru: peers",
+        "command": "go_guru",
+        "args": {
+            "mode": "peers"
+        }
+    },
+    {
+        "caption": "GoGuru: pointsto",
+        "command": "go_guru",
+        "args": {
+            "mode": "pointsto"
+        }
+    },
+    {
+        "caption": "GoGuru: referrers",
+        "command": "go_guru",
+        "args": {
+           "mode": "referrers"
+        }
+    },
+    {
+        "caption": "GoGuru: what",
+        "command": "go_guru",
+        "args": {
+            "mode": "what"
+        }
+    },
+    {
+        "caption": "GoGuru: callgraph",
+        "command": "go_guru",
+        "args": {
+            "mode": "callgraph"
+        }
+    },
+    {
+        "caption": "GoGuru: Default Settings",
+        "command": "open_file",
+        "args": {
+            "file": "${packages}/GoGuru/Default.sublime-settings"
+        }
+    },
+    {
+        "caption": "GoGuru: Default Key Bindings",
+        "command": "open_file",
+        "args": {
+            "file": "${packages}/GoGuru/Default (Linux).sublime-keymap",
+        "platform": "Linux"
+        }
+    },
+    {
+        "caption": "GoGuru: Default Key Bindings",
+        "command": "open_file",
+        "args": {
+            "file": "${packages}/GoGuru/Default (Windows).sublime-keymap",
+        "platform": "Windows"
+        }
+    },
+    {
+        "caption": "GoGuru: Default Key Bindings",
+        "command": "open_file",
+        "args": {
+            "file": "${packages}/GoGuru/Default (OSX).sublime-keymap",
+        "platform": "OSX"
+        }
+    },
+    
+]
