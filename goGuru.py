@@ -16,7 +16,6 @@ PluginPath = sublime.packages_path()+'/GoGuru/'
 use_golangconfig = get_setting("use_golangconfig", False)
 
 
-
 def log(*msg):
     print("GoGuru:", msg[0:])
 
