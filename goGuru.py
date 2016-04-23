@@ -12,7 +12,7 @@ import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
 
 DEBUG = get_setting("debug", False)
 VERSION = ''
-DEV = False
+DEV = True
 PluginPath = sublime.packages_path()+'/GoGuru/'
 use_golangconfig = get_setting("use_golangconfig", False)
 
@@ -28,6 +28,10 @@ def debug(*msg):
 def error(*msg):
         print("GoGuru [ERROR]:", msg[0:])
 
+# load shellenv
+def load_shellenv():
+    sys.path.append(PluginPath+"/dep/")
+    import shellenv
 
 # try golangconfig
 if use_golangconfig:
@@ -37,12 +41,10 @@ if use_golangconfig:
         error("couldn't import golangconfig:", sys.exc_info()[0])
         log("using shellenv instead of golangconfig")
         use_golangconfig = False
-        sys.exit()
+        load_shellenv()
     
 else:
-    # load shellenv
-    sys.path.append(PluginPath+"/dep/")
-    import shellenv
+    load_shellenv()
 
 def plugin_loaded():
     global VERSION
