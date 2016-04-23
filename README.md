@@ -43,6 +43,9 @@ Oracle has several variables to be set in order to work. These are explained in 
 	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
 	"env": {},
 
+	// use golangconfig, if false then shellenv will be used to get golang environment variables
+	"use_golangconfig": false,
+
 	// use_current_package adds to the guru_scope the current package of the the working file
 	"use_current_package" : true,
 

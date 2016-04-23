@@ -12,7 +12,7 @@ import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
 
 DEBUG = get_setting("debug", False)
 VERSION = ''
-DEV = False
+DEV = True
 PluginPath = sublime.packages_path()+'/GoGuru/'
 use_golangconfig = get_setting("use_golangconfig", False)
 
