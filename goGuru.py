@@ -64,8 +64,8 @@ def plugin_loaded():
     # read version
     f = open(PluginPath+'VERSION', 'r')
     VERSION = f.read().rstrip()
-    log("version:", VERSION)
     f.close()
+    log("version:", VERSION)
 
 
 class GoGuruCommand(sublime_plugin.TextCommand):
@@ -73,8 +73,6 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         self.view = view 
         self.mode = 'None'
     def run(self, edit, mode=None):
-
-        DEBUG = get_setting("debug", False)
 
         region = self.view.sel()[0]
         text = self.view.substr(sublime.Region(0, region.end()))
