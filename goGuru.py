@@ -10,20 +10,13 @@ go get golang.org/x/tools/cmd/guru
 
 import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
 
-DEBUG = False
+DEBUG = get_setting("debug", False)
 VERSION = ''
-DEV = True
+DEV = False
 PluginPath = sublime.packages_path()+'/GoGuru/'
 use_golangconfig = get_setting("use_golangconfig", False)
 
 
-# try golangconfig
-if use_golangconfig:
-    import golangconfig
-else:
-    # load shellenv
-    sys.path.append(PluginPath+"/dep/")
-    import shellenv
 
 def log(*msg):
     print("GoGuru:", msg[0:])
@@ -32,11 +25,27 @@ def debug(*msg):
     if DEBUG:
         print("GoGuru [DEBUG]:", msg[0:])
 
+def error(*msg):
+        print("GoGuru [ERROR]:", msg[0:])
+
+
+# try golangconfig
+if use_golangconfig:
+    try:
+        import golangconfig    
+    except:
+        error("couldn't import golangconfig:", sys.exc_info()[0])
+        return
+    
+else:
+    # load shellenv
+    sys.path.append(PluginPath+"/dep/")
+    import shellenv
+
 def plugin_loaded():
-    global DEBUG
     global VERSION
-    DEBUG = get_setting("debug", False)
-    log("GoGuru DEBUG:", DEBUG)
+    log("debug:", DEBUG)
+    log("use_golangconfig", use_golangconfig)
 
     if DEV:
         try:
@@ -44,18 +53,19 @@ def plugin_loaded():
             p = subprocess.Popen(["git", "describe", "master", "--tags"], stdout=subprocess.PIPE, cwd=PluginPath)
             GITVERSION = p.communicate()[0].decode("utf-8").rstrip()
             if p.returncode != 0:
-                 log("invalid git process return code", p.returncode)
-                 raise
+                 error("invalid git process return code", p.returncode)
+                 return
             f = open(PluginPath+'VERSION', 'w')
             f.write(GITVERSION)
             f.close()
         except:
-            log("couldn't get git tag, unexpected error:", sys.exc_info()[0])
+            error("couldn't get git tag:", sys.exc_info()[0])
+            return
 
     # read version
     f = open(PluginPath+'VERSION', 'r')
     VERSION = f.read().rstrip()
-    log("VERSION:", VERSION)
+    log("version:", VERSION)
     f.close()
 
 
@@ -172,26 +182,30 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         if begin_offset is not None:
             pos = "#%i,#%i" %(begin_offset, end_offset)
 
-        #Set GOOS based on os at the end of the file name.
-        #TODO Check file header for builds.
         file_path = self.view.file_name()
 
-
-
+        # golang config or shellenv ?
+        cmd_env = ''
         if use_golangconfig:
-            toolpath, cmd_env = golangconfig.subprocess_info('guru', ['GOPATH', 'PATH'], view=self.view)
-            log(toolpath, cmd_env)
+            try:
+                toolpath, cmd_env = golangconfig.subprocess_info('guru', ['GOPATH', 'PATH'], view=self.view)
+                toolpath = os.path.realpath(toolpath)
+            except:
+                error("golangconfig:", sys.exc_info())
+                return
+        else:
+            toolpath = 'guru'
+            cmd_env = shellenv.get_env(for_subprocess=True)[1]
+            cmd_env.update(get_setting("env", {}))
 
-        merged_env = shellenv.get_env(for_subprocess=True)[1]
-        merged_env.update(get_setting("env", {}))
-        debug("env", merged_env)
+        debug("env", cmd_env)
 
         guru_scope = ",".join(get_setting("guru_scope", ""))
 
         # assumed local package 
         if get_setting("use_current_package", True) :
             current_file_path = os.path.realpath(os.path.dirname(file_path))
-            GOPATH = os.path.realpath(merged_env["GOPATH"]+"/src")+"/"
+            GOPATH = os.path.realpath(cmd_env["GOPATH"]+"/src")+"/"
             local_package = current_file_path.replace(GOPATH, "")
             debug("current_file_path", current_file_path)
             debug("GOPATH", GOPATH)
@@ -207,7 +221,8 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             guru_json = "-json"
 
         # Build guru cmd.
-        cmd = "guru %(scope)s %(guru_json)s %(mode)s %(file_path)s:%(pos)s" % {
+        cmd = "%(toolpath)s %(scope)s %(guru_json)s %(mode)s %(file_path)s:%(pos)s" % {
+        "toolpath": toolpath,
         "file_path": file_path,
         "pos": pos,
         "guru_json": guru_json,
@@ -215,7 +230,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         "scope": guru_scope} 
         debug("cmd", cmd)
 
-        sublime.set_timeout_async(lambda: self.runInThread(cmd, callback, merged_env), 0)
+        sublime.set_timeout_async(lambda: self.runInThread(cmd, callback, cmd_env), 0)
 
     def runInThread(self, cmd, callback, env):
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, env=env)
