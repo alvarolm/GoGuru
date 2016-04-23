@@ -66,24 +66,33 @@
 <p>Oracle has several variables to be set in order to work. These are explained in the comments of the default settings <code>Preferences &gt; Package Settings &gt; GoOracle &gt; Settings-Default</code>:</p>
 
 <div class="highlight highlight-source-js"><pre>{
-    <span class="pl-c">// env is a map that overwriters the default environment vars</span>
+    <span class="pl-c">// env overwrites the default shell environment vars</span>
     <span class="pl-c">// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }</span>
     <span class="pl-s"><span class="pl-pds">"</span>env<span class="pl-pds">"</span></span><span class="pl-k">:</span> {},
 
-    <span class="pl-c">// use_current_package adds to the guru_scope the current directory where the file is</span>
+    <span class="pl-c">// use golangconfig, if false then shellenv will be used to get golang environment variables</span>
+    <span class="pl-s"><span class="pl-pds">"</span>use_golangconfig<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
+
+    <span class="pl-c">// use_current_package adds to the guru_scope the current package of the the working file</span>
     <span class="pl-s"><span class="pl-pds">"</span>use_current_package<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-c1">true</span>,
 
     <span class="pl-c">// guru_scope is an array of scopes of analysis for guru.</span>
     <span class="pl-c">// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]</span>
     <span class="pl-s"><span class="pl-pds">"</span>guru_scope<span class="pl-pds">"</span></span><span class="pl-k">:</span> [],
 
-    <span class="pl-c">// The format of guru's output can be one of: 'json', 'xml' or 'plain'</span>
-    <span class="pl-s"><span class="pl-pds">"</span>guru_format<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>plain<span class="pl-pds">"</span></span>,
+    <span class="pl-c">// Set guru's output to json</span>
+    <span class="pl-s"><span class="pl-pds">"</span>guru_json<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
+
+    <span class="pl-c">// besides showing the result, jump directly to the definition</span>
+    <span class="pl-s"><span class="pl-pds">"</span>go_guru_jumpto_definition<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
 
     <span class="pl-c">// The output can either be one of: 'buffer', 'output_panel'</span>
     <span class="pl-c">// Buffers can hold results from more than one invocation</span>
     <span class="pl-c">// Output panels sit underneath the editor area and are easily dismissed</span>
-    <span class="pl-s"><span class="pl-pds">"</span>output<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>output_panel<span class="pl-pds">"</span></span>
+    <span class="pl-s"><span class="pl-pds">"</span>output<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>output_panel<span class="pl-pds">"</span></span>,
+
+    <span class="pl-c">// print debug info to the terminal</span>
+    <span class="pl-s"><span class="pl-pds">"</span>debug<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">true</span>
 }</pre></div>
 
 <p>You set your own variables in <code>Preferences &gt; Package Settings &gt; GoGuru &gt; Settings-User</code>.</p>
