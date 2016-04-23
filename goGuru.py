@@ -97,8 +97,6 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
                 self.guru(byte_end, begin_offset=byte_begin, mode=modes[i], callback=self.guru_complete)
 
-        # remember mode for future actions
-        self.mode = mode
         self.view.window().show_quick_panel(descriptions, on_done, sublime.MONOSPACE_FONT)
 
     def guru_complete(self, out, err):
@@ -107,6 +105,8 @@ class GoGuruCommand(sublime_plugin.TextCommand):
     def write_running(self, mode):
         """ Write the "Running..." header to a new file and focus it to get results
         """
+        # remember mode for future actions
+        self.mode = mode
 
         window = self.view.window()
         view = get_output_view(window)
@@ -137,12 +137,17 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             window.focus_view(view)
 
         # jump to definition if is set
-        if get_setting("go_guru_jumpto_definition", False):
-            if not err:
-                coordinates = result.split(':')[:3]
-                new_view = window.open_file(':'.join(coordinates), sublime.ENCODED_POSITION)
-                if group != -1:
-                    window.focus_group(group)
+        log('mode', self.mode)
+        if self.mode == 'definition':
+            log('jumping!!')
+            if get_setting("go_guru_jumpto_definition", False):
+                log('jumping!!???', err, result)
+                if result:
+                    log('jumping!!?????????????????????')
+                    coordinates = result.split(':')[:3]
+                    new_view = window.open_file(':'.join(coordinates), sublime.ENCODED_POSITION)
+                    if group != -1:
+                        window.focus_group(group)
 
     def get_map(self, chars):
         """ Generate a map of character offset to byte offset for the given string 'chars'.
