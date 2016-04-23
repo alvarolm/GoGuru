@@ -53,6 +53,9 @@ Oracle has several variables to be set in order to work. These are explained in 
 	// Set guru's output to json
 	"guru_json": false,
 
+	// instead of showing result, jump directly to definition
+	"go_guru_jumpto_definition": false,
+
 	// The output can either be one of: 'buffer', 'output_panel'
 	// Buffers can hold results from more than one invocation
 	// Output panels sit underneath the editor area and are easily dismissed

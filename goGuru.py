@@ -56,7 +56,7 @@ def plugin_loaded():
 class GoGuruCommand(sublime_plugin.TextCommand):
     def __init__(self, view):
         self.view = view 
-        self.thevariable = 'YOUR VALUE'
+        self.mode = 'None'
     def run(self, edit, mode=None):
 
         DEBUG = get_setting("debug", False)
@@ -97,6 +97,8 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
                 self.guru(byte_end, begin_offset=byte_begin, mode=modes[i], callback=self.guru_complete)
 
+        # remember mode for future actions
+        self.mode = mode
         self.view.window().show_quick_panel(descriptions, on_done, sublime.MONOSPACE_FONT)
 
     def guru_complete(self, out, err):
@@ -133,6 +135,14 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             window.run_command('show_panel', {'panel': "output." + view.name() })
         else:
             window.focus_view(view)
+
+        # jump to definition if is set
+        if get_setting("go_guru_jumpto_definition", False):
+            if not err:
+                coordinates = result.split(':')[:3]
+                new_view = window.open_file(':'.join(coordinates), sublime.ENCODED_POSITION)
+                if group != -1:
+                    window.focus_group(group)
 
     def get_map(self, chars):
         """ Generate a map of character offset to byte offset for the given string 'chars'.
