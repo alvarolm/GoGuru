@@ -35,7 +35,7 @@ if use_golangconfig:
         import golangconfig    
     except:
         error("couldn't import golangconfig:", sys.exc_info()[0])
-        log("using shellenv instead")
+        log("using shellenv instead of golangconfig")
         use_golangconfig = False
         sys.exit()
     
