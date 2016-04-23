@@ -12,7 +12,6 @@ import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
 
 DEBUG = get_setting("debug", False)
 VERSION = ''
-DEV = True
 PluginPath = sublime.packages_path()+'/GoGuru/'
 use_golangconfig = get_setting("use_golangconfig", False)
 
@@ -51,19 +50,17 @@ def plugin_loaded():
     log("debug:", DEBUG)
     log("use_golangconfig", use_golangconfig)
 
-    if DEV:
-        try:
-            p = subprocess.Popen(["git", "describe", "master", "--tags"], stdout=subprocess.PIPE, cwd=PluginPath)
-            GITVERSION = p.communicate()[0].decode("utf-8").rstrip()
-            if p.returncode != 0:
-                 error("invalid git process return code", p.returncode)
-                 return
-            f = open(PluginPath+'VERSION', 'w')
-            f.write(GITVERSION)
-            f.close()
-        except:
-            error("couldn't get git tag:", sys.exc_info()[0])
-            return
+    # keep track of the version if possible
+    try:
+        p = subprocess.Popen(["git", "describe", "master", "--tags"], stdout=subprocess.PIPE, cwd=PluginPath)
+        GITVERSION = p.communicate()[0].decode("utf-8").rstrip()
+        if p.returncode != 0:
+             debug("git return code", p.returncode)
+        f = open(PluginPath+'VERSION', 'w')
+        f.write(GITVERSION)
+        f.close()
+    except:
+        debug("couldn't get git tag:", sys.exc_info()[0])
 
     # read version
     f = open(PluginPath+'VERSION', 'r')
