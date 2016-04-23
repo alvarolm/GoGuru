@@ -42,7 +42,7 @@ Install Sublime Package Control (if you haven't done so already) from http://wbo
 
 Bring up the command palette (default ctrl+shift+g or cmd+shift+g) and start typing Package Control: Install Package then press return or click on that option to activate it. You will be presented with a new Quick Panel with the list of available packages. Type GoGuru and press return or on its entry to install GoGuru. If there is no entry for GoGuru, you most likely already have it installed.
 
-Oracle has several variables to be set in order to work. These are explained in the comments of the default settings `Preferences > Package Settings > GoOracle > Settings-Default`:
+GoOracle has several variables to be set in order to work. These are explained in the comments of the default settings `Preferences > Package Settings > GoOracle > Settings-Default`:
 
 ```javascript
 {
