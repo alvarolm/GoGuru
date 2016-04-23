@@ -4,7 +4,7 @@
 	"env": {},
 
 	// use golangconfig, if false then shellenv will be used to get golang environment variables
-	"use_golangconfig": true,
+	"use_golangconfig": false,
 
 	// use_current_package adds to the guru_scope the current package of the the working file
 	"use_current_package" : true,

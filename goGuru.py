@@ -12,7 +12,7 @@ import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
 
 DEBUG = get_setting("debug", False)
 VERSION = ''
-DEV = False
+DEV = True
 PluginPath = sublime.packages_path()+'/GoGuru/'
 use_golangconfig = get_setting("use_golangconfig", False)
 
@@ -35,7 +35,7 @@ if use_golangconfig:
         import golangconfig    
     except:
         error("couldn't import golangconfig:", sys.exc_info()[0])
-        return
+        sys.exit()
     
 else:
     # load shellenv
@@ -49,7 +49,6 @@ def plugin_loaded():
 
     if DEV:
         try:
-            PluginPath = sublime.packages_path()+'/GoGuru/'
             p = subprocess.Popen(["git", "describe", "master", "--tags"], stdout=subprocess.PIPE, cwd=PluginPath)
             GITVERSION = p.communicate()[0].decode("utf-8").rstrip()
             if p.returncode != 0:
