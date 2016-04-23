@@ -14,10 +14,16 @@ DEBUG = False
 VERSION = ''
 DEV = True
 PluginPath = sublime.packages_path()+'/GoGuru/'
+use_golangconfig = get_setting("use_golangconfig", False)
 
-# load shellenv
-sys.path.append(PluginPath+"/dep/")
-import shellenv
+
+# try golangconfig
+if use_golangconfig:
+    import golangconfig
+else:
+    # load shellenv
+    sys.path.append(PluginPath+"/dep/")
+    import shellenv
 
 def log(*msg):
     print("GoGuru:", msg[0:])
@@ -139,11 +145,8 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         # jump to definition if is set
         log('mode', self.mode)
         if self.mode == 'definition':
-            log('jumping!!')
             if get_setting("go_guru_jumpto_definition", False):
-                log('jumping!!???', err, result)
                 if result:
-                    log('jumping!!?????????????????????')
                     coordinates = result.split(':')[:3]
                     new_view = window.open_file(':'.join(coordinates), sublime.ENCODED_POSITION)
                     if group != -1:

@@ -3,9 +3,11 @@
 	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
 	"env": {},
 
+	// use golangconfig, if false then shellenv will be used to get golang environment variables
+	"use_golangconfig": true,
+
 	// use_current_package adds to the guru_scope the current package of the the working file
 	"use_current_package" : true,
-
 
 	// guru_scope is an array of scopes of analysis for guru.
 	// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]
