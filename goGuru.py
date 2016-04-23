@@ -143,12 +143,12 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             window.focus_view(view)
 
         # jump to definition if is set
-        log('mode', self.mode)
         if self.mode == 'definition':
             if get_setting("go_guru_jumpto_definition", False):
                 if result:
                     coordinates = result.split(':')[:3]
                     new_view = window.open_file(':'.join(coordinates), sublime.ENCODED_POSITION)
+                    group, _ = window.get_view_index(new_view)
                     if group != -1:
                         window.focus_group(group)
 
@@ -176,6 +176,11 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         #TODO Check file header for builds.
         file_path = self.view.file_name()
 
+
+
+        if use_golangconfig:
+            toolpath, cmd_env = golangconfig.subprocess_info('guru', ['GOPATH', 'PATH'], view=self.view)
+            log(toolpath, cmd_env)
 
         merged_env = shellenv.get_env(for_subprocess=True)[1]
         merged_env.update(get_setting("env", {}))
