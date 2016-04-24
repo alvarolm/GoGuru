@@ -151,7 +151,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
         # jump to definition if is set
         if self.mode == 'definition':
-            if get_setting("go_guru_jumpto_definition", False):
+            if get_setting("jumpto_definition", False):
                 if result:
                     coordinates = result.split(':')[:3]
                     new_view = window.open_file(':'.join(coordinates), sublime.ENCODED_POSITION)
