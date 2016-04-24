@@ -140,4 +140,4 @@ Copyright, License & Contributors
 
 GoGuru is released under the MIT license. See [LICENSE.md](LICENSE.md)
 
-GoGuru is the copyrighted work of *The GoGuru Authors* i.e me ([alvarolm](https://github.com/alvarolm/GoGuru)) and *all* contributors. If you submit a change, be it documentation or code, so long as it's committed to GoOracle's history I consider you a contributor. See [AUTHORS.md](AUTHORS.md) for a list of all the GoGuru authors/contributors.
+GoGuru is the copyrighted work of *The GoGuru Authors* i.e me ([alvarolm](https://github.com/alvarolm/GoGuru)) and *all* contributors. If you submit a change, be it documentation or code, so long as it's committed to GoGuru's history I consider you a contributor. See [AUTHORS.md](AUTHORS.md) for a list of all the GoGuru authors/contributors.
