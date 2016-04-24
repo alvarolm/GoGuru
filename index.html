@@ -35,6 +35,15 @@
 
 <p>based on previus work from <a href="http://github.com/waigani/GoOracle">waigani</a>.</p>
 
+<p>the guru tool still is on developent,
+check out the plan, the official git repo and the code review if you want to keep up:</p>
+
+<ul>
+<li><a href="https://docs.google.com/document/d/1UErU12vR7jTedYvKHVNRzGPmXqdMASZ6PfE7B-p6sIg/edit#">https://docs.google.com/document/d/1UErU12vR7jTedYvKHVNRzGPmXqdMASZ6PfE7B-p6sIg/edit#</a></li>
+<li><a href="https://go.googlesource.com/tools/+log/master/cmd/guru">https://go.googlesource.com/tools/+log/master/cmd/guru</a></li>
+<li><a href="https://go-review.googlesource.com/#/q/guru">https://go-review.googlesource.com/#/q/guru</a></li>
+</ul>
+
 <h2>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
@@ -63,7 +72,7 @@
 
 <p>Bring up the command palette (default ctrl+shift+g or cmd+shift+g) and start typing Package Control: Install Package then press return or click on that option to activate it. You will be presented with a new Quick Panel with the list of available packages. Type GoGuru and press return or on its entry to install GoGuru. If there is no entry for GoGuru, you most likely already have it installed.</p>
 
-<p>Oracle has several variables to be set in order to work. These are explained in the comments of the default settings <code>Preferences &gt; Package Settings &gt; GoOracle &gt; Settings-Default</code>:</p>
+<p>GoOracle has several variables to be set in order to work. These are explained in the comments of the default settings <code>Preferences &gt; Package Settings &gt; GoOracle &gt; Settings-Default</code>:</p>
 
 <div class="highlight highlight-source-js"><pre>{
     <span class="pl-c">// env overwrites the default shell environment vars</span>
@@ -76,15 +85,8 @@
     <span class="pl-c">// use_current_package adds to the guru_scope the current package of the the working file</span>
     <span class="pl-s"><span class="pl-pds">"</span>use_current_package<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-c1">true</span>,
 
-    <span class="pl-c">// guru_scope is an array of scopes of analysis for guru.</span>
-    <span class="pl-c">// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]</span>
-    <span class="pl-s"><span class="pl-pds">"</span>guru_scope<span class="pl-pds">"</span></span><span class="pl-k">:</span> [],
-
-    <span class="pl-c">// Set guru's output to json</span>
-    <span class="pl-s"><span class="pl-pds">"</span>guru_json<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
-
     <span class="pl-c">// besides showing the result, jump directly to the definition</span>
-    <span class="pl-s"><span class="pl-pds">"</span>go_guru_jumpto_definition<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>jumpto_definition<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">true</span>,
 
     <span class="pl-c">// The output can either be one of: 'buffer', 'output_panel'</span>
     <span class="pl-c">// Buffers can hold results from more than one invocation</span>
@@ -92,7 +94,14 @@
     <span class="pl-s"><span class="pl-pds">"</span>output<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>output_panel<span class="pl-pds">"</span></span>,
 
     <span class="pl-c">// print debug info to the terminal</span>
-    <span class="pl-s"><span class="pl-pds">"</span>debug<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">true</span>
+    <span class="pl-s"><span class="pl-pds">"</span>debug<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">true</span>,
+
+    <span class="pl-c">// guru_scope is an array of scopes of analysis for guru.</span>
+    <span class="pl-c">// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]</span>
+    <span class="pl-s"><span class="pl-pds">"</span>guru_scope<span class="pl-pds">"</span></span><span class="pl-k">:</span> [],
+
+    <span class="pl-c">// Set guru's output to json</span>
+    <span class="pl-s"><span class="pl-pds">"</span>guru_json<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
 }</pre></div>
 
 <p>You set your own variables in <code>Preferences &gt; Package Settings &gt; GoGuru &gt; Settings-User</code>.</p>
