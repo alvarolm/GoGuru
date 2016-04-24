@@ -45,6 +45,7 @@ def plugin_loaded():
     # try golangconfig
     if use_golangconfig:
         try:
+            global golangconfig
             import golangconfig    
         except:
             error("couldn't import golangconfig:", sys.exc_info()[0])
