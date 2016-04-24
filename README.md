@@ -40,7 +40,7 @@ Install
 
 Install Sublime Package Control (if you haven't done so already) from http://wbond.net/sublime_packages/package_control. Be sure to restart ST to complete the installation.
 
-Bring up the command palette (default ctrl+shift+g or cmd+shift+g) and start typing Package Control: Install Package then press return or click on that option to activate it. You will be presented with a new Quick Panel with the list of available packages. Type GoGuru and press return or on its entry to install GoGuru. If there is no entry for GoGuru, you most likely already have it installed.
+Bring up the command palette (default ctrl+shift+p or cmd+shift+p) and start typing Package Control: Install Package then press return or click on that option to activate it. You will be presented with a new Quick Panel with the list of available packages. Type GoGuru and press return or on its entry to install GoGuru. If there is no entry for GoGuru, you most likely already have it installed.
 
 GoOracle has several variables to be set in order to work. These are explained in the comments of the default settings `Preferences > Package Settings > GoOracle > Settings-Default`:
 
