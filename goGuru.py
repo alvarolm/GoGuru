@@ -211,7 +211,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
         guru_scope = ",".join(get_setting("guru_scope", ""))
 
-        # assumed local package 
+        # add local package to guru scope
         if get_setting("use_current_package", True) :
             current_file_path = os.path.realpath(os.path.dirname(file_path))
             GOPATH = os.path.realpath(cmd_env["GOPATH"]+"/src")+"/"
