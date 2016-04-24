@@ -124,7 +124,7 @@ Dependencies
 ------------
 GoGuru relies on the guru tool. You must install it in order for GoOracle to work. Run the following on your command line:
 
-`go get golang.org/x/tools/cmd/guru`
+`go get -u golang.org/x/tools/cmd/guru`
 
 
 About Go Guru
