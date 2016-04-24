@@ -10,10 +10,10 @@ go get golang.org/x/tools/cmd/guru
 
 import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
 
-DEBUG = get_setting("debug", False)
+DEBUG = False
 VERSION = ''
-PluginPath = sublime.packages_path()+'/GoGuru/'
-use_golangconfig = get_setting("use_golangconfig", False)
+PluginPath = ''
+use_golangconfig = False
 
 
 def log(*msg):
@@ -26,26 +26,37 @@ def debug(*msg):
 def error(*msg):
         print("GoGuru [ERROR]:", msg[0:])
 
-# load shellenv
-def load_shellenv():
-    sys.path.append(PluginPath+"/dep/")
-    import shellenv
-
-# try golangconfig
-if use_golangconfig:
-    try:
-        import golangconfig    
-    except:
-        error("couldn't import golangconfig:", sys.exc_info()[0])
-        log("using shellenv instead of golangconfig")
-        use_golangconfig = False
-        load_shellenv()
-    
-else:
-    load_shellenv()
-
 def plugin_loaded():
+    global DEBUG
     global VERSION
+    global PluginPath
+    global use_golangconfig
+
+    DEBUG = get_setting("debug", False)
+    PluginPath = sublime.packages_path()+'/GoGuru/'
+    use_golangconfig = get_setting("use_golangconfig", False)
+
+    # load shellenv
+    def load_shellenv():
+        sys.path.append(PluginPath+"/dep/")
+        global shellenv
+        import shellenv
+
+    # try golangconfig
+    if use_golangconfig:
+        try:
+            import golangconfig    
+        except:
+            error("couldn't import golangconfig:", sys.exc_info()[0])
+            log("using shellenv instead of golangconfig")
+            use_golangconfig = False
+            load_shellenv()
+        
+    else:
+        load_shellenv()
+
+
+
     log("debug:", DEBUG)
     log("use_golangconfig", use_golangconfig)
 
@@ -310,25 +321,6 @@ class GoGuruOpenResultCommand(sublime_plugin.EventListener):
                 w.focus_group(group)
 
 
-def get_setting(key, default=None):
-    """ Returns the setting in the following hierarchy: project setting, user setting, 
-    default setting.  If none are set the 'default' value passed in is returned.
-    """
-
-    val = None
-    try:
-       val = sublime.active_window().active_view().settings().get('GoGuru', {}).get(key)
-    except AttributeError:
-        pass
-
-    if not val:
-        val = sublime.load_settings("User.sublime-settings").get(key)
-    if not val:
-        val = sublime.load_settings("Default.sublime-settings").get(key)
-    if not val:
-        val = default
-    return val
-
 def get_output_view(window):
     view = None
     buff_name = 'Oracle Output'
@@ -352,3 +344,22 @@ def get_output_view(window):
     view.set_syntax_file('Packages/GoGuru/GoGuruResults.tmLanguage')
 
     return view
+
+def get_setting(key, default=None):
+    """ Returns the setting in the following hierarchy: project setting, user setting, 
+    default setting.  If none are set the 'default' value passed in is returned.
+    """
+
+    val = None
+    try:
+       val = sublime.active_window().active_view().settings().get('GoGuru', {}).get(key)
+    except AttributeError:
+        pass
+
+    if not val:
+        val = sublime.load_settings("User.sublime-settings").get(key)
+    if not val:
+        val = sublime.load_settings("Default.sublime-settings").get(key)
+    if not val:
+        val = default
+    return val
