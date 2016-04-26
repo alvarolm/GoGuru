@@ -100,7 +100,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             return
 
         # Get the guru mode from the user.
-        modes = ["callees","callers","callstack","definition","describe","freevars","implements","peers","pointsto","referrers","what","callgraph"]
+        modes = ["callees","callers","callstack","definition","describe","freevars","implements","peers","pointsto","referrers","what","whicherrs"]
         descriptions  = [
             "callees     show possible targets of selected function call",
             "callers     show possible callers of selected function",
@@ -113,7 +113,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             "pointsto    show variables the selected pointer may point to",
             "referrers   show all refs to entity denoted by selected identifier",
             "what        show basic information about the selected syntax node",
-            "callgraph   show complete callgraph of program"]
+            "whicherrs   show possible values of the selected error variable"]
 
         # Call guru cmd with the given mode.
         def on_done(i):
