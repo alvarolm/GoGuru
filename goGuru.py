@@ -216,9 +216,11 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         # add local package to guru scope
         if get_setting("use_current_package", True) :
             current_file_path = os.path.realpath(os.path.dirname(file_path))
-            GOPATH = os.path.realpath(cmd_env["GOPATH"]+"/src")+"/"
-            local_package = current_file_path.replace(GOPATH, "")
-            debug("current_file_path", current_file_path)
+            GOPATH = os.path.realpath(cmd_env["GOPATH"])
+            GOPATH = os.path.join(GOPATH,"src")
+            local_package = os.path.relpath(current_file_path, GOPATH)
+            if sublime.platform() == 'windows':
+                local_package = local_package.replace('\\', '/')
             debug("GOPATH", GOPATH)
             debug("local_package", local_package)
             guru_scope = guru_scope+','+local_package
