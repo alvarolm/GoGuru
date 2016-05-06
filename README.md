@@ -122,7 +122,7 @@ You can also set a key binding for a specific mode by adding a "mode" arg, e.g.:
 
 Dependencies
 ------------
-GoGuru relies on the guru tool. You must install it in order for GoOracle to work. Run the following on your command line:
+GoGuru relies on the guru tool. You must install it in order for GoGuru to work. Run the following on your command line:
 
 `go get -u golang.org/x/tools/cmd/guru`
 
