@@ -29,7 +29,7 @@
       </header>
       <section>
         <h1>
-<a id="goguru" class="anchor" href="#goguru" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GoGuru</h1>
+<a id="goguru-" class="anchor" href="#goguru-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>GoGuru </h1>
 
 <p>GoGuru is a Golang plugin for <a href="http://www.sublimetext.com/">SublimeText</a> 3 that integrates the Go <a href="https://godoc.org/golang.org/x/tools/cmd/guru">guru</a> tool.</p>
 
@@ -70,15 +70,11 @@ check out the plan, the official git repo and the code review if you want to kee
 
 <p>Install Sublime Package Control (if you haven't done so already) from <a href="http://wbond.net/sublime_packages/package_control">http://wbond.net/sublime_packages/package_control</a>. Be sure to restart ST to complete the installation.</p>
 
-<p>Bring up the command palette (default ctrl+shift+g or cmd+shift+g) and start typing Package Control: Install Package then press return or click on that option to activate it. You will be presented with a new Quick Panel with the list of available packages. Type GoGuru and press return or on its entry to install GoGuru. If there is no entry for GoGuru, you most likely already have it installed.</p>
+<p>Bring up the command palette (default ctrl+shift+p or cmd+shift+p) and start typing Package Control: Install Package then press return or click on that option to activate it. You will be presented with a new Quick Panel with the list of available packages. Type GoGuru and press return or on its entry to install GoGuru. If there is no entry for GoGuru, you most likely already have it installed.</p>
 
 <p>GoOracle has several variables to be set in order to work. These are explained in the comments of the default settings <code>Preferences &gt; Package Settings &gt; GoOracle &gt; Settings-Default</code>:</p>
 
 <div class="highlight highlight-source-js"><pre>{
-    <span class="pl-c">// env overwrites the default shell environment vars</span>
-    <span class="pl-c">// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }</span>
-    <span class="pl-s"><span class="pl-pds">"</span>env<span class="pl-pds">"</span></span><span class="pl-k">:</span> {},
-
     <span class="pl-c">// use golangconfig, if false then shellenv will be used to get golang environment variables</span>
     <span class="pl-s"><span class="pl-pds">"</span>use_golangconfig<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
 
@@ -86,7 +82,7 @@ check out the plan, the official git repo and the code review if you want to kee
     <span class="pl-s"><span class="pl-pds">"</span>use_current_package<span class="pl-pds">"</span></span> <span class="pl-k">:</span> <span class="pl-c1">true</span>,
 
     <span class="pl-c">// besides showing the result, jump directly to the definition</span>
-    <span class="pl-s"><span class="pl-pds">"</span>jumpto_definition<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">true</span>,
+    <span class="pl-s"><span class="pl-pds">"</span>jumpto_definition<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
 
     <span class="pl-c">// The output can either be one of: 'buffer', 'output_panel'</span>
     <span class="pl-c">// Buffers can hold results from more than one invocation</span>
@@ -94,14 +90,21 @@ check out the plan, the official git repo and the code review if you want to kee
     <span class="pl-s"><span class="pl-pds">"</span>output<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>output_panel<span class="pl-pds">"</span></span>,
 
     <span class="pl-c">// print debug info to the terminal</span>
-    <span class="pl-s"><span class="pl-pds">"</span>debug<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">true</span>,
-
-    <span class="pl-c">// guru_scope is an array of scopes of analysis for guru.</span>
-    <span class="pl-c">// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]</span>
-    <span class="pl-s"><span class="pl-pds">"</span>guru_scope<span class="pl-pds">"</span></span><span class="pl-k">:</span> [],
+    <span class="pl-s"><span class="pl-pds">"</span>debug<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
 
     <span class="pl-c">// Set guru's output to json</span>
     <span class="pl-s"><span class="pl-pds">"</span>guru_json<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">false</span>,
+
+    <span class="pl-c">// guru_scope is an array of scopes of analysis for guru.</span>
+    <span class="pl-c">// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]</span>
+    <span class="pl-c">// not used when use_golangconfig is set to true</span>
+
+    <span class="pl-s"><span class="pl-pds">"</span>guru_scope<span class="pl-pds">"</span></span><span class="pl-k">:</span> [],
+
+    <span class="pl-c">// env overwrites the default shell environment vars</span>
+    <span class="pl-c">// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }</span>
+    <span class="pl-c">// not used when use_golangconfig is set to true</span>
+    <span class="pl-s"><span class="pl-pds">"</span>env<span class="pl-pds">"</span></span><span class="pl-k">:</span> {},
 }</pre></div>
 
 <p>You set your own variables in <code>Preferences &gt; Package Settings &gt; GoGuru &gt; Settings-User</code>.</p>
@@ -145,9 +148,9 @@ check out the plan, the official git repo and the code review if you want to kee
 <h2>
 <a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h2>
 
-<p>GoGuru relies on the guru tool. You must install it in order for GoOracle to work. Run the following on your command line:</p>
+<p>GoGuru relies on the guru tool. You must install it in order for GoGuru to work. Run the following on your command line:</p>
 
-<p><code>go get golang.org/x/tools/cmd/guru</code></p>
+<p><code>go get -u golang.org/x/tools/cmd/guru</code></p>
 
 <h2>
 <a id="about-go-guru" class="anchor" href="#about-go-guru" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>About Go Guru</h2>
@@ -163,7 +166,7 @@ check out the plan, the official git repo and the code review if you want to kee
 
 <p>GoGuru is released under the MIT license. See <a href="LICENSE.md">LICENSE.md</a></p>
 
-<p>GoGuru is the copyrighted work of <em>The GoGuru Authors</em> i.e me (<a href="https://github.com/alvarolm/GoGuru">alvarolm</a>) and <em>all</em> contributors. If you submit a change, be it documentation or code, so long as it's committed to GoOracle's history I consider you a contributor. See <a href="AUTHORS.md">AUTHORS.md</a> for a list of all the GoGuru authors/contributors.</p>
+<p>GoGuru is the copyrighted work of <em>The GoGuru Authors</em> i.e me (<a href="https://github.com/alvarolm/GoGuru">alvarolm</a>) and <em>all</em> contributors. If you submit a change, be it documentation or code, so long as it's committed to GoGuru's history I consider you a contributor. See <a href="AUTHORS.md">AUTHORS.md</a> for a list of all the GoGuru authors/contributors.</p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/alvarolm">alvarolm</a></p>
