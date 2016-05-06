@@ -46,10 +46,6 @@ GoOracle has several variables to be set in order to work. These are explained i
 
 ```javascript
 {
-	// env overwrites the default shell environment vars
-	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
-	"env": {},
-
 	// use golangconfig, if false then shellenv will be used to get golang environment variables
 	"use_golangconfig": false,
 
@@ -57,7 +53,7 @@ GoOracle has several variables to be set in order to work. These are explained i
 	"use_current_package" : true,
 
 	// besides showing the result, jump directly to the definition
-	"jumpto_definition": true,
+	"jumpto_definition": false,
 
 	// The output can either be one of: 'buffer', 'output_panel'
 	// Buffers can hold results from more than one invocation
@@ -65,14 +61,21 @@ GoOracle has several variables to be set in order to work. These are explained i
 	"output": "output_panel",
 
 	// print debug info to the terminal
-	"debug": true,
-
-	// guru_scope is an array of scopes of analysis for guru.
-	// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]
-	"guru_scope": [],
+	"debug": false,
 
 	// Set guru's output to json
 	"guru_json": false,
+
+	// guru_scope is an array of scopes of analysis for guru.
+	// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]
+	// not used when use_golangconfig is set to true
+
+	"guru_scope": [],
+
+	// env overwrites the default shell environment vars
+	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
+	// not used when use_golangconfig is set to true
+	"env": {},
 }
 ```
 You set your own variables in `Preferences > Package Settings > GoGuru > Settings-User`.
