@@ -15,3 +15,6 @@ GoGuru Changes
 	* typos
 	* fixed: guru commands updated to match latest version of guru (Chris Hines <github@cs-guy.com>)
 	* fixed: GOPATH and local_package calculations on Windows (Chris Hines <github@cs-guy.com>)
+
+## 0.1.3
+	* fixed: Navigating to results file in windows (Chris Hines <github@cs-guy.com>)
