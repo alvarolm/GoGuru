@@ -34,8 +34,8 @@ Select, or place your cursor over, a symbol (function, variable, constant etc) a
 	whicherrs	show possible values of the selected error variable
 ```
 
-Select one and the output will be displayed in a new tab.
-
+Select one of the modes and the output will be displayed in a new tab.
+**double click on the file name in the results to jump directly to it.**
 
 Install
 -------
