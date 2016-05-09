@@ -10,3 +10,8 @@ GoGuru Changes
     * new feature: integrated official golangconfig dependency
     * fixed: flag provided but not defined: -format
     * fixed: shellenv missing
+
+## 0.1.2
+	* typos
+	* fixed: guru commands updated to match latest version of guru (Chris Hines <github@cs-guy.com>)
+	* fixed: GOPATH and local_package calculations on Windows (Chris Hines <github@cs-guy.com>)
