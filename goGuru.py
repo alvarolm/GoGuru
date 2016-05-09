@@ -38,9 +38,9 @@ def plugin_loaded():
 
     # load shellenv
     def load_shellenv():
-        sys.path.append(PluginPath+"/dep/")
         global shellenv
-        import shellenv
+        #import shellenv
+        from .dep import shellenv
 
     # try golangconfig
     if use_golangconfig:
