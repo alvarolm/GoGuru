@@ -23,7 +23,7 @@
     <!-- plain output line reference -->
     <dict>
       <key>match</key>
-      <string>^([^:]*:[0-9]+.[0-9]+)[-:]</string>
+      <string>^(.+\.go:[0-9]+.[0-9]+)[-:]</string>
       <key>captures</key>
       <dict>
         <key>1</key>

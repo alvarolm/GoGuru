@@ -316,7 +316,7 @@ class GoGuruOpenResultCommand(sublime_plugin.EventListener):
 
         # filename:line.col-line.col: pattern for plain
         if m == None:
-            m = re.search("^([^:]+):([0-9]+).([0-9]+)[-: ]", text)
+            m = re.search("^(.+\.go):([0-9]+).([0-9]+)[-: ]", text)
         
         if m:
             w = view.window()
