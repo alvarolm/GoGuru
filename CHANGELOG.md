@@ -18,3 +18,7 @@ GoGuru Changes
 
 ## 0.1.3
 	* fixed: Navigating to results file in windows (Chris Hines <github@cs-guy.com>)
+
+## 0.1.4
+    * fixed: shellenv missing - through packagecontrol.io #12
+    * fixed: use relative instead absolute import path for dependencies. #11
