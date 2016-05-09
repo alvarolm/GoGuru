@@ -12,7 +12,6 @@ import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
 
 DEBUG = False
 VERSION = ''
-PluginPath = ''
 use_golangconfig = False
 
 
@@ -29,9 +28,10 @@ def error(*msg):
 def plugin_loaded():
     global DEBUG
     global VERSION
-    global PluginPath
+    PluginPath = ''
     global use_golangconfig
 
+    log("CWD", os.getcwd())
     DEBUG = get_setting("debug", False)
     PluginPath = sublime.packages_path()+'/GoGuru/'
     use_golangconfig = get_setting("use_golangconfig", False)
@@ -39,7 +39,6 @@ def plugin_loaded():
     # load shellenv
     def load_shellenv():
         global shellenv
-        #import shellenv
         from .dep import shellenv
 
     # try golangconfig
@@ -56,29 +55,34 @@ def plugin_loaded():
     else:
         load_shellenv()
 
-
-
     log("debug:", DEBUG)
     log("use_golangconfig", use_golangconfig)
 
-    # keep track of the version if possible
+    # keep track of the version if possible (pretty nasty workaround, any other ideas ?)
     try:
         p = subprocess.Popen(["git", "describe", "master", "--tags"], stdout=subprocess.PIPE, cwd=PluginPath)
         GITVERSION = p.communicate()[0].decode("utf-8").rstrip()
         if p.returncode != 0:
              debug("git return code", p.returncode)
-        f = open('./VERSION', 'w')
-        f.write(GITVERSION)
+             raise Exception("git return code", p.returncode) 
+
+        defsettings = os.path.join(os.path.dirname( os.path.realpath(__file__)), 'Default.sublime-settings')
+        f = open(defsettings,'r')
+        filedata = f.read()
         f.close()
+        settings = sublime.load_settings('Default.sublime-settings')
+        newdata = filedata.replace(settings.get('goguru_version'), GITVERSION)
+        f = open(defsettings,'w')
+        f.write(newdata)
+        f.close()
+
     except:
         debug("couldn't get git tag:", sys.exc_info()[0])
 
     # read version
-    f = open(PluginPath+'./VERSION', 'r')
-    VERSION = f.read().rstrip()
-    f.close()
+    VERSION = sublime.load_settings('Default.sublime-settings').get('goguru_version')
     log("version:", VERSION)
-
+    f.close()
 
 class GoGuruCommand(sublime_plugin.TextCommand):
     def __init__(self, view):
