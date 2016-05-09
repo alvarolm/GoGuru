@@ -3,6 +3,8 @@ GoGuru [![documentation](https://img.shields.io/badge/info-documentation-blue.sv
 
 GoGuru is a Golang plugin for [SublimeText](http://www.sublimetext.com/) 3 that integrates the Go [guru](https://godoc.org/golang.org/x/tools/cmd/guru) tool.
 
+Please report any issues or improvements here [https://github.com/alvarolm/GoGuru/issues](https://github.com/alvarolm/GoGuru/issues)
+
 based on previus work from [waigani](http://github.com/waigani/GoOracle).
 
 the guru tool still is on developent,
