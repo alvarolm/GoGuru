@@ -67,14 +67,14 @@ def plugin_loaded():
         GITVERSION = p.communicate()[0].decode("utf-8").rstrip()
         if p.returncode != 0:
              debug("git return code", p.returncode)
-        f = open(PluginPath+'VERSION', 'w')
+        f = open('./VERSION', 'w')
         f.write(GITVERSION)
         f.close()
     except:
         debug("couldn't get git tag:", sys.exc_info()[0])
 
     # read version
-    f = open(PluginPath+'VERSION', 'r')
+    f = open(PluginPath+'./VERSION', 'r')
     VERSION = f.read().rstrip()
     f.close()
     log("version:", VERSION)
