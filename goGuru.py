@@ -8,12 +8,13 @@ It depends on the guru tool being installed:
 go get golang.org/x/tools/cmd/guru
 """
 
+# TODO: review & clean
+
 import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
 
 DEBUG = False
 VERSION = ''
 use_golangconfig = False
-
 
 def log(*msg):
     print("GoGuru:", msg[0:])
@@ -30,7 +31,7 @@ def plugin_loaded():
     global VERSION
     global use_golangconfig
 
-    DEBUG = get_setting("debug", False)
+    DEBUG = get_setting("goguru_debug", False)
     use_golangconfig = get_setting("use_golangconfig", False)
 
     # load shellenv
@@ -57,27 +58,28 @@ def plugin_loaded():
 
     # keep track of the version if possible (pretty nasty workaround, any other ideas ?)
     try:
+        PluginPath = os.path.dirname(os.path.realpath(__file__))
         p = subprocess.Popen(["git", "describe", "master", "--tags"], stdout=subprocess.PIPE, cwd=PluginPath)
         GITVERSION = p.communicate()[0].decode("utf-8").rstrip()
+        log('replacing', get_setting('goguru_version'), 'for', GITVERSION+'_')
         if p.returncode != 0:
              debug("git return code", p.returncode)
              raise Exception("git return code", p.returncode) 
 
-        defsettings = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Default.sublime-settings')
+
+        defsettings = os.path.join(PluginPath, 'Default.sublime-settings')
         f = open(defsettings,'r')
         filedata = f.read()
         f.close()
-        settings = sublime.load_settings('Default.sublime-settings')
-        newdata = filedata.replace(settings.get('goguru_version'), GITVERSION+'_')
+        newdata = filedata.replace(get_setting('goguru_version'), GITVERSION+'_')
         f = open(defsettings,'w')
         f.write(newdata)
         f.close()
-
     except:
         debug("couldn't get git tag:", sys.exc_info()[0])
 
     # read version
-    VERSION = sublime.load_settings('Default.sublime-settings').get('goguru_version')
+    VERSION = get_setting('goguru_version')
     log("version:", VERSION)
 
 class GoGuruCommand(sublime_plugin.TextCommand):
