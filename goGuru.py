@@ -32,7 +32,7 @@ def plugin_loaded():
     global use_golangconfig
 
     DEBUG = get_setting("goguru_debug", False)
-    use_golangconfig = get_setting("use_golangconfig", False)
+    use_golangconfig = get_setting("goguru_use_golangconfig", False)
 
     # load shellenv
     def load_shellenv():
