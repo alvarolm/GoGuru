@@ -49,7 +49,7 @@ GoGuru has several variables to be set in order to work. These are explained in 
 ```javascript
 {
 	// use golangconfig, if false then shellenv will be used to get golang environment variables
-	"use_golangconfig": false,
+	"goguru_use_golangconfig": false,
 
 	// use_current_package adds to the guru_scope the current package of the the working file
 	"use_current_package" : true,
@@ -63,15 +63,13 @@ GoGuru has several variables to be set in order to work. These are explained in 
 	"output": "output_panel",
 
 	// print debug info to the terminal
-	"debug": false,
+	"goguru_debug": false,
 
 	// Set guru's output to json
 	"guru_json": false,
 
 	// guru_scope is an array of scopes of analysis for guru.
 	// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]
-	// not used when use_golangconfig is set to true
-
 	"guru_scope": [],
 
 	// env overwrites the default shell environment vars
