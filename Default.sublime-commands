@@ -11,7 +11,7 @@
         "caption": "GoGuru: User Settings",
         "command": "open_file",
         "args": {
-            "file": "${packages}/GoGuru/User.sublime-settings"
+            "file": "${packages}/User/GoGuru.sublime-settings"
         }
     },
     {
