@@ -28,12 +28,9 @@ def error(*msg):
 def plugin_loaded():
     global DEBUG
     global VERSION
-    PluginPath = ''
     global use_golangconfig
 
-    log("CWD", os.getcwd())
     DEBUG = get_setting("debug", False)
-    PluginPath = sublime.packages_path()+'/GoGuru/'
     use_golangconfig = get_setting("use_golangconfig", False)
 
     # load shellenv
@@ -66,12 +63,12 @@ def plugin_loaded():
              debug("git return code", p.returncode)
              raise Exception("git return code", p.returncode) 
 
-        defsettings = os.path.join(os.path.dirname( os.path.realpath(__file__)), 'Default.sublime-settings')
+        defsettings = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Default.sublime-settings')
         f = open(defsettings,'r')
         filedata = f.read()
         f.close()
         settings = sublime.load_settings('Default.sublime-settings')
-        newdata = filedata.replace(settings.get('goguru_version'), GITVERSION)
+        newdata = filedata.replace(settings.get('goguru_version'), GITVERSION+'_')
         f = open(defsettings,'w')
         f.write(newdata)
         f.close()
@@ -82,7 +79,6 @@ def plugin_loaded():
     # read version
     VERSION = sublime.load_settings('Default.sublime-settings').get('goguru_version')
     log("version:", VERSION)
-    f.close()
 
 class GoGuruCommand(sublime_plugin.TextCommand):
     def __init__(self, view):
