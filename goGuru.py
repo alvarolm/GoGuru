@@ -82,6 +82,12 @@ def plugin_loaded():
     VERSION = get_setting('goguru_version')
     log("version:", VERSION)
 
+    # check if user setting exists and creates it
+    us = sublime.load_settings("GoGuru.sublime-settings")
+    if (not us.has('goguru_debug')):
+        us.set('goguru_debug', DEBUG)
+        sublime.save_settings("GoGuru.sublime-settings")
+
 class GoGuruCommand(sublime_plugin.TextCommand):
     def __init__(self, view):
         self.view = view 
