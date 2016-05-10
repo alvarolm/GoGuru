@@ -44,7 +44,7 @@ Install Sublime Package Control (if you haven't done so already) from http://wbo
 
 Bring up the command palette (default ctrl+shift+p or cmd+shift+p) and start typing Package Control: Install Package then press return or click on that option to activate it. You will be presented with a new Quick Panel with the list of available packages. Type GoGuru and press return or on its entry to install GoGuru. If there is no entry for GoGuru, you most likely already have it installed.
 
-GoOracle has several variables to be set in order to work. These are explained in the comments of the default settings `Preferences > Package Settings > GoOracle > Settings-Default`:
+GoGuru has several variables to be set in order to work. These are explained in the comments of the default settings `Preferences > Package Settings > GoGuru > Settings-Default`:
 
 ```javascript
 {
@@ -82,7 +82,7 @@ GoOracle has several variables to be set in order to work. These are explained i
 ```
 You set your own variables in `Preferences > Package Settings > GoGuru > Settings-User`.
 
-You can also make project specific settings. First save your current workspace as a project `Project > Save as project ...`, then edit your project `Project > Edit Project`. Below is an example which sets up GoOracle to be used on the [github.com/juju/juju](https://github.com/juju/juju) codebase:
+You can also make project specific settings. First save your current workspace as a project `Project > Save as project ...`, then edit your project `Project > Edit Project`. Below is an example which sets up GoGuru to be used on the [github.com/juju/juju](https://github.com/juju/juju) codebase:
 
 ```javascript
 {
