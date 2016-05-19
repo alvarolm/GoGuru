@@ -12,35 +12,24 @@ go get golang.org/x/tools/cmd/guru
 
 import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
 
-DEBUG = False
-VERSION = ''
-use_golangconfig = False
-
 def log(*msg):
     print("GoGuru:", msg[0:])
 
 def debug(*msg):
-    if DEBUG:
+    if get_setting("goguru_debug", False):
         print("GoGuru [DEBUG]:", msg[0:])
 
 def error(*msg):
         print("GoGuru [ERROR]:", msg[0:])
 
 def plugin_loaded():
-    global DEBUG
-    global VERSION
-    global use_golangconfig
-
-    DEBUG = get_setting("goguru_debug", False)
-    use_golangconfig = get_setting("goguru_use_golangconfig", False)
-
     # load shellenv
     def load_shellenv():
         global shellenv
         from .dep import shellenv
 
     # try golangconfig
-    if use_golangconfig:
+    if get_setting("goguru_use_golangconfig", False):
         try:
             global golangconfig
             import golangconfig    
@@ -53,8 +42,8 @@ def plugin_loaded():
     else:
         load_shellenv()
 
-    log("debug:", DEBUG)
-    log("use_golangconfig", use_golangconfig)
+    log("debug:", get_setting("goguru_debug", False))
+    log("use_golangconfig", get_setting("goguru_use_golangconfig", False))
 
     # keep track of the version if possible (pretty nasty workaround, any other ideas ?)
     try:
@@ -78,13 +67,12 @@ def plugin_loaded():
         debug("couldn't get git tag:", sys.exc_info()[0])
 
     # read version
-    VERSION = get_setting('goguru_version')
-    log("version:", VERSION)
+    log("version:", get_setting('goguru_version'))
 
     # check if user setting exists and creates it
     us = sublime.load_settings("GoGuru.sublime-settings")
     if (not us.has('goguru_debug')):
-        us.set('goguru_debug', DEBUG)
+        us.set('goguru_debug', get_setting("goguru_debug", False))
         sublime.save_settings("GoGuru.sublime-settings")
 
 class GoGuruCommand(sublime_plugin.TextCommand):
@@ -204,7 +192,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
         # golang config or shellenv ?
         cmd_env = ''
-        if use_golangconfig:
+        if get_setting("goguru_use_golangconfig", False):
             try:
                 toolpath, cmd_env = golangconfig.subprocess_info('guru', ['GOPATH', 'PATH'], view=self.view)
                 toolpath = os.path.realpath(toolpath)
