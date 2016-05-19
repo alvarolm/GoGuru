@@ -81,13 +81,18 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         self.mode = 'None'
     def run(self, edit, mode=None):
 
-        region = self.view.sel()[0]
-        text = self.view.substr(sublime.Region(0, region.end()))
-        cb_map = self.get_map(text)
-        byte_end = cb_map[sorted(cb_map.keys())[-1]]
-        byte_begin = None
-        if not region.empty(): 
-            byte_begin = cb_map[region.begin()-1]
+        try:
+            region = self.view.sel()[0]
+            text = self.view.substr(sublime.Region(0, region.end()))
+            cb_map = self.get_map(text)
+            byte_end = cb_map[sorted(cb_map.keys())[-1]]
+            byte_begin = None
+            if not region.empty(): 
+                byte_begin = cb_map[region.begin()-1]
+        except:
+            sublime.error_message('GoGuru:\nCouldn\'t get cursor positon, make sure that the Go source file is saved and the cursor is over the identifier (variable, function ...) you want to query.')
+            error("couldn't get cursor positon: ", sys.exc_info())
+            return
 
         if mode:
             self.write_running(mode)
