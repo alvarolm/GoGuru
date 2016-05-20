@@ -15,7 +15,7 @@
        | |                        
        |_|                        
 
-Version 1.12
+Version 0.1.12
 
 the settings variables have been renamed,
 so remember to update your user config
