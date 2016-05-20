@@ -5,7 +5,7 @@
 	// use golangconfig, if false then shellenv will be used to get golang environment variables
 	"goguru_use_golangconfig": false,
 
-	// use_current_package adds to the guru_scope the current package of the the working file
+	// adds to the guru_scope the current package of the the working file
 	"goguru_use_current_package" : true,
 
 	// besides showing the result, jump directly to the definition
@@ -22,12 +22,12 @@
 	// Set guru's output to json
 	"goguru_json": false,
 
-	// guru_scope is an array of scopes of analysis for guru.
+	// an array of scopes of analysis for guru.
 	// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]
 	"goguru_scope": [],
 
 	// env overwrites the default shell environment vars
 	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
-	// not used when use_golangconfig is set to true
-	"goguru_env": {},
+	// not used when goguru_use_golangconfig is set to true
+	"goguru_env": {}
 }

@@ -52,31 +52,31 @@ GoGuru has several variables to be set in order to work. These are explained in 
 	// use golangconfig, if false then shellenv will be used to get golang environment variables
 	"goguru_use_golangconfig": false,
 
-	// use_current_package adds to the guru_scope the current package of the the working file
-	"use_current_package" : true,
+	// adds to the guru_scope the current package of the the working file
+	"goguru_use_current_package" : true,
 
 	// besides showing the result, jump directly to the definition
-	"jumpto_definition": false,
+	"goguru_jumpto_definition": false,
 
 	// The output can either be one of: 'buffer', 'output_panel'
 	// Buffers can hold results from more than one invocation
 	// Output panels sit underneath the editor area and are easily dismissed
-	"output": "output_panel",
+	"goguru_output": "output_panel",
 
 	// print debug info to the terminal
 	"goguru_debug": false,
 
 	// Set guru's output to json
-	"guru_json": false,
+	"goguru_json": false,
 
-	// guru_scope is an array of scopes of analysis for guru.
+	// an array of scopes of analysis for guru.
 	// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]
-	"guru_scope": [],
+	"goguru_scope": [],
 
 	// env overwrites the default shell environment vars
 	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
-	// not used when use_golangconfig is set to true
-	"env": {},
+	// not used when goguru_use_golangconfig is set to true
+	"goguru_env": {},
 }
 ```
 You set your own variables in `Preferences > Package Settings > GoGuru > Settings-User`.
