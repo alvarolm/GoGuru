@@ -139,7 +139,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         # Run a new command to use the edit object for this view.
         view.run_command('go_guru_write_running', {'mode': mode})
 
-        if get_setting("output", "buffer") == "output_panel":
+        if get_setting("goguru_output", "buffer") == "output_panel":
             window.run_command('show_panel', {'panel': "output." + view.name() })
         else:
             window.focus_view(view)
@@ -156,14 +156,14 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             'result': result,
             'err': err})
 
-        if get_setting("output", "buffer") == "output_panel":
+        if get_setting("goguru_output", "buffer") == "output_panel":
             window.run_command('show_panel', {'panel': "output." + view.name() })
         else:
             window.focus_view(view)
 
         # jump to definition if is set
         if self.mode == 'definition':
-            if get_setting("jumpto_definition", False):
+            if get_setting("goguru_jumpto_definition", False):
                 if result:
                     coordinates = result.split(':')[:3]
                     new_view = window.open_file(':'.join(coordinates), sublime.ENCODED_POSITION)
@@ -207,14 +207,14 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         else:
             toolpath = 'guru'
             cmd_env = shellenv.get_env(for_subprocess=True)[1]
-            cmd_env.update(get_setting("env", {}))
+            cmd_env.update(get_setting("goguru_env", {}))
 
         debug("env", cmd_env)
 
-        guru_scope = ",".join(get_setting("guru_scope", ""))
+        guru_scope = ",".join(get_setting("goguru_scope", ""))
 
         # add local package to guru scope
-        if get_setting("use_current_package", True) :
+        if get_setting("goguru_use_current_package", True) :
             current_file_path = os.path.realpath(os.path.dirname(file_path))
             GOPATH = os.path.realpath(cmd_env["GOPATH"])
             GOPATH = os.path.join(GOPATH,"src")
@@ -230,7 +230,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             guru_scope = "-scope "+guru_scope
 
         guru_json = ""
-        if get_setting("guru_json", False):
+        if get_setting("goguru_json", False):
             guru_json = "-json"
 
         # Build guru cmd.
@@ -283,7 +283,7 @@ class GoGuruWriteRunningCommand(sublime_plugin.TextCommand):
 
 class GoGuruShowResultsCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        if get_setting("output", "buffer") == "output_panel":
+        if get_setting("goguru_output", "buffer") == "output_panel":
             self.view.window().run_command('show_panel', {'panel': "output.Oracle Output" })
         else:
             output_view = get_output_view(self.view.window())
@@ -330,7 +330,7 @@ def get_output_view(window):
     view = None
     buff_name = 'Oracle Output'
 
-    if get_setting("output", "buffer") == "output_panel":
+    if get_setting("goguru_output", "buffer") == "output_panel":
         view = window.create_output_panel(buff_name)
     else:
         # If the output file is already open, use that.
