@@ -207,9 +207,12 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         else:
             toolpath = 'guru'
             cmd_env = shellenv.get_env(for_subprocess=True)[1]
-            cmd_env.update(get_setting("goguru_env", {}))
+            debug("cmd_env", cmd_env)
+            goguru_env = get_setting("goguru_env", {})
+            debug("goguru_env", goguru_env)
+            cmd_env.update(goguru_env)
 
-        debug("env", cmd_env)
+        debug("final_env", cmd_env)
 
         guru_scope = ",".join(get_setting("goguru_scope", ""))
 
