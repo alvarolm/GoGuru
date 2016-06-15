@@ -79,6 +79,8 @@ class GoGuruCommand(sublime_plugin.TextCommand):
     def __init__(self, view):
         self.view = view 
         self.mode = 'None'
+        self.env = 'None'
+        self.local_package = 'None'
     def run(self, edit, mode=None):
 
         try:
@@ -96,7 +98,17 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
         if mode:
             self.write_running(mode)
-            self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)
+            # expiremental
+            # uses gosublime gs_doc commands to look for documentation
+            # if it fails pareses the 'guru describe' output to query 'go doc'
+            if mode == "godoc":
+                self.view.window().run_command('gs_doc', {'mode': "hint"})
+                gsdoc = self.view.window().find_output_panel('GsDoc-output-output')
+                if gsdoc != None:
+                    if not 'no docs found' in gsdoc.substr(gsdoc.line(0)):
+                        return
+                mode = "describe"
+                self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)
             return
 
         # Get the guru mode from the user.
@@ -148,8 +160,76 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         """ Write the guru output to a new file.
         """
 
+        def cleanPackageAddr (p):
+            return str(p).replace('"', '').replace('(', '').replace(')', '').replace('*', '')
+
         window = self.view.window()
         view = get_output_view(window)
+
+        jump = False
+        # parse guru describe to query go doc
+        if self.mode == 'godoc' and  result:
+            parts = result.split()
+
+            definitionLine = parts[0]
+            goType = parts[3]
+
+            package = ''
+            identifier = ''
+            subparts = []
+            
+            debug('godoc', 'goType', goType)
+            if goType == 'package':
+                # /home/username/go/src/myProject/utils/global/global.go:104.24-104.29: reference to package "errors"
+                    package = cleanPackageAddr(parts[4])
+            elif goType == 'func':
+                # /home/username/go/src/myProject/utils/global/global.go:232.9-232.20: reference to method func (*myProject/utils/uid.GUIDGenerator).SetServiceID(ServiceID *string)
+                parts[4] = str(parts[4].split('(')[0]).split(".")
+                package = parts[4][0]
+                identifier = '.'.join(parts[4][1:])
+            # /home/username/go/src/myProject/watchdog/main.go:78.10-78.17: reference to method func (*myProject/utils/global.Instance).ExitBool(returnErrorCodePtr *bool)
+            # /home/username/go/src/myProject/watchdog/main.go:200.18-200.19: reference to method func (*instanceStats).me() string
+            elif goType == 'method':
+
+                parts[5] = cleanPackageAddr(parts[5].split('(')[1])
+
+                if '/' in parts[5]:
+                    parts[5] = parts[5].split(".")
+                    package = parts[5][0]
+                    identifier = '.'.join(parts[5][1:])
+                elif parts[5][0].isupper():
+                    parts[5] = parts[5].split(".")
+                    package = self.local_package
+                    identifier = '.'.join(parts[5][1:])
+                else:
+                    parts[5] = parts[5].split(".")
+                    package = "-u "+self.local_package
+                    identifier = '.'.join(parts[5][0:])
+
+            elif goType == 'interface':
+                # /home/username/go/src/myProject/utils/global/global.go:238.16-238.19: reference to interface method func (myProject/utils/crypto.GenericKeyHolder).Init(
+
+                parts[6] = cleanPackageAddr(parts[6]).split('.')
+                package = parts[6][0]
+                identifier = parts[6][1]
+
+                # /home/username/go/src/myProject/utils/uid/uid.go:99:26: concrete method func (*myProject/utils/uid.GUIDGenerator).SetServiceID(ServiceID *string)
+                # /home/username/go/src/myProject/utils/log/log.go:50:2:   implements method (myProject/utils/log.GUIDGenerator).SetServiceID
+            else:
+                result = goType + " not implemented yet."
+                jump = True
+
+            if not jump:
+                cmd = "go doc %(package)s %(identifier)s " % {
+                "package": package,
+                "identifier": identifier} 
+                debug("godoc","cmd", cmd)
+       
+                proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, env=self.env)
+                o, e = proc.communicate()
+
+                result = o.decode('utf-8')
+                err = e.decode('utf-8')
 
         # Run a new command to use the edit object for this view.
         view.run_command('go_guru_write_results', {
@@ -170,6 +250,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                     group, _ = window.get_view_index(new_view)
                     if group != -1:
                         window.focus_group(group)
+            
 
     def get_map(self, chars):
         """ Generate a map of character offset to byte offset for the given string 'chars'.
@@ -213,6 +294,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             cmd_env.update(goguru_env)
 
         debug("final_env", cmd_env)
+        self.env = cmd_env
 
         guru_scope = ",".join(get_setting("goguru_scope", ""))
 
@@ -226,6 +308,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                 local_package = local_package.replace('\\', '/')
             debug("GOPATH", GOPATH)
             debug("local_package", local_package)
+            self.local_package = local_package
             guru_scope = guru_scope+','+local_package
         guru_scope = guru_scope.strip()
         debug("guru_scope", guru_scope)
@@ -266,6 +349,7 @@ class GoGuruWriteResultsCommand(sublime_plugin.TextCommand):
         if result:
             view.insert(edit, view.size(), result)
         if err:
+            error(err)
             view.insert(edit, view.size(), err)
 
         view.insert(edit, view.size(), "\n\n\n")
@@ -287,7 +371,7 @@ class GoGuruWriteRunningCommand(sublime_plugin.TextCommand):
 class GoGuruShowResultsCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         if get_setting("goguru_output", "buffer") == "output_panel":
-            self.view.window().run_command('show_panel', {'panel': "output.Oracle Output" })
+            self.view.window().run_command('show_panel', {'panel': "output.GoGuru Output" })
         else:
             output_view = get_output_view(self.view.window())
             self.view.window().focus_view(output_view)
@@ -295,7 +379,7 @@ class GoGuruShowResultsCommand(sublime_plugin.TextCommand):
 
 class GoGuruOpenResultCommand(sublime_plugin.EventListener):
     def on_selection_modified(self, view):
-      if view.name() == "Oracle Output":
+      if view.name() == "GoGuru Output":
         if len(view.sel()) != 1:
             return
         if view.sel()[0].size() == 0:
@@ -331,7 +415,7 @@ class GoGuruOpenResultCommand(sublime_plugin.EventListener):
 
 def get_output_view(window):
     view = None
-    buff_name = 'Oracle Output'
+    buff_name = 'GoGuru Output'
 
     if get_setting("goguru_output", "buffer") == "output_panel":
         view = window.create_output_panel(buff_name)
@@ -350,6 +434,7 @@ def get_output_view(window):
     view_settings = view.settings()
     view_settings.set('line_numbers', False)
     view.set_syntax_file('Packages/GoGuru/GoGuruResults.tmLanguage')
+    view.set_syntax_file('Packages/Go/Go.sublime-syntax')
 
     return view
 
