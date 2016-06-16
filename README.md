@@ -73,6 +73,9 @@ GoGuru has several variables to be set in order to work. These are explained in 
 	// e.g (for github.com/juju/juju) "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"]
 	"goguru_scope": [],
 
+	// an array of build tags of analyzed source files
+	"goguru_tags": [],
+
 	// env overwrites the default shell environment vars
 	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
 	// not used when goguru_use_golangconfig is set to true

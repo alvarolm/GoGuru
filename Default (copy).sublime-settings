@@ -27,6 +27,9 @@
 	// not used when use_golangconfig is set to true
 
 	"guru_scope": [],
+	
+	// an array of build tags of analyzed source files
+	"guru_tags": [],
 
 	// env overwrites the default shell environment vars
 	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
