@@ -107,6 +107,9 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                 if gsdoc != None:
                     if not 'no docs found' in gsdoc.substr(gsdoc.line(0)):
                         return
+                def messageLookingDoc():
+                    self.write_out(None, "'gs_doc' failed,\nsearching documentation with 'goguru godoc'...")
+                sublime.set_timeout(lambda: messageLookingDoc(), 110) # any other choice besides timeout ? 
                 mode = "describe"
                 self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)
             return
@@ -152,7 +155,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         view.run_command('go_guru_write_running', {'mode': mode})
 
         if get_setting("goguru_output", "buffer") == "output_panel":
-            window.run_command('show_panel', {'panel': "output." + view.name() })
+            window.run_command('show_panel', {'panel': "output." + view.name(), 'toggle': False } )
         else:
             window.focus_view(view)
 
@@ -171,7 +174,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         if self.mode == 'godoc' and  result:
             parts = result.split()
 
-            definitionLine = parts[0]
+            definitionLine = result.split('\n')[1]
             goType = parts[3]
 
             package = ''
@@ -184,9 +187,16 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                     package = cleanPackageAddr(parts[4])
             elif goType == 'func':
                 # /home/username/go/src/myProject/utils/global/global.go:232.9-232.20: reference to method func (*myProject/utils/uid.GUIDGenerator).SetServiceID(ServiceID *string)
-                parts[4] = str(parts[4].split('(')[0]).split(".")
-                package = parts[4][0]
-                identifier = '.'.join(parts[4][1:])
+                if parts[4] == 'method':
+                    parts[4] = str(parts[4].split('(')[0]).split(".")
+                    package = parts[4][0]
+                    identifier = '.'.join(parts[4][1:])
+                # /home/username/go/src/myProject/watchdog/main.go:84.5-84.17: reference to func StartUpClient()
+                else:
+                    package = "-u "+self.local_package
+                    parts[4] = cleanPackageAddr(parts[4]).split(".")
+                    identifier = '.'.join(parts[4])
+
             # /home/username/go/src/myProject/watchdog/main.go:78.10-78.17: reference to method func (*myProject/utils/global.Instance).ExitBool(returnErrorCodePtr *bool)
             # /home/username/go/src/myProject/watchdog/main.go:200.18-200.19: reference to method func (*instanceStats).me() string
             elif goType == 'method':
@@ -197,14 +207,10 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                     parts[5] = parts[5].split(".")
                     package = parts[5][0]
                     identifier = '.'.join(parts[5][1:])
-                elif parts[5][0].isupper():
-                    parts[5] = parts[5].split(".")
-                    package = self.local_package
-                    identifier = '.'.join(parts[5][1:])
                 else:
                     parts[5] = parts[5].split(".")
                     package = "-u "+self.local_package
-                    identifier = '.'.join(parts[5][0:])
+                    identifier = '.'.join(parts[5][1:])
 
             elif goType == 'interface':
                 # /home/username/go/src/myProject/utils/global/global.go:238.16-238.19: reference to interface method func (myProject/utils/crypto.GenericKeyHolder).Init(
@@ -229,6 +235,15 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                 o, e = proc.communicate()
 
                 result = o.decode('utf-8')
+
+                # comment non go code
+                prettierResult = ''
+                for line in result.splitlines():
+                    if line[0:4] == '    ':
+                        prettierResult += '//'+ line + '\n'
+                    else:
+                        prettierResult += line + '\n'
+                result = prettierResult+'\n'+definitionLine
                 err = e.decode('utf-8')
 
         # Run a new command to use the edit object for this view.
@@ -289,7 +304,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             toolpath = 'guru'
             cmd_env = shellenv.get_env(for_subprocess=True)[1]
             debug("cmd_env", cmd_env)
-            goguru_env = get_setting("goguru_env", {})
+            goguru_env = get_setting("goguru_env", {}) 
             debug("goguru_env", goguru_env)
             cmd_env.update(goguru_env)
 
@@ -299,7 +314,9 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         guru_scope = ",".join(get_setting("goguru_scope", ""))
 
         # add local package to guru scope
-        if get_setting("goguru_use_current_package", True) :
+        useCurrentPackage = get_setting("goguru_use_current_package", True)
+        debug("goguru_use_current_package", useCurrentPackage)
+        if useCurrentPackage:
             current_file_path = os.path.realpath(os.path.dirname(file_path))
             GOPATH = os.path.realpath(cmd_env["GOPATH"])
             GOPATH = os.path.join(GOPATH,"src")
