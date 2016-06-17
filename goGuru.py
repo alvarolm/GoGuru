@@ -108,10 +108,15 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                     if not 'no docs found' in gsdoc.substr(gsdoc.line(0)):
                         return
                 def messageLookingDoc():
-                    self.write_out(None, "'gs_doc' failed,\nsearching documentation with 'goguru godoc'...")
-                sublime.set_timeout(lambda: messageLookingDoc(), 110) # any other choice besides timeout ? 
+                    self.write_out(None, "'gs_doc' failed,\nsearching documentation with 'goguru mode=godoc'...")
+                sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ? 
                 mode = "describe"
-                self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)
+            elif mode == "godoc_direct":
+                def messageLookingDoc():
+                    self.write_out(None, "'searching documentation with 'goguru mode=godoc_direct'...")
+                sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ? 
+                mode = "describe"
+            self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)                
             return
 
         # Get the guru mode from the user.
@@ -169,9 +174,9 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         window = self.view.window()
         view = get_output_view(window)
 
-        jump = False
         # parse guru describe to query go doc
-        if self.mode == 'godoc' and  result:
+        jump = False
+        if (self.mode == 'godoc' or self.mode == 'godoc_direct') and  result:
             parts = result.split()
 
             definitionLine = result.split('\n')[1]
@@ -183,7 +188,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             
             debug('godoc', 'goType', goType)
             if goType == 'package':
-                # /home/username/go/src/myProject/utils/global/global.go:104.24-104.29: reference to package "errors"
+                    # /home/username/go/src/myProject/utils/global/global.go:104.24-104.29: reference to package "errors"
                     package = cleanPackageAddr(parts[4])
             elif goType == 'func':
                 # /home/username/go/src/myProject/utils/global/global.go:232.9-232.20: reference to method func (*myProject/utils/uid.GUIDGenerator).SetServiceID(ServiceID *string)
@@ -191,26 +196,39 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                     parts[4] = str(parts[4].split('(')[0]).split(".")
                     package = parts[4][0]
                     identifier = '.'.join(parts[4][1:])
-                # /home/username/go/src/myProject/watchdog/main.go:84.5-84.17: reference to func StartUpClient()
                 else:
-                    package = "-u "+self.local_package
-                    parts[4] = cleanPackageAddr(parts[4]).split(".")
-                    identifier = '.'.join(parts[4])
+                    # /home/usuario/go/src/myProject/watchdog/main.go:55.14-55.31: reference to func myProject/utils/global.ContainsAnyOfThese(str string, anyof []string) bool
+                    if '/' in parts[4]:
+                        parts[4] = parts[4].split('.')
+                        package = parts[4][0]
+                        identifier = parts[4][1].split('(')[0]
 
-            # /home/username/go/src/myProject/watchdog/main.go:78.10-78.17: reference to method func (*myProject/utils/global.Instance).ExitBool(returnErrorCodePtr *bool)
-            # /home/username/go/src/myProject/watchdog/main.go:200.18-200.19: reference to method func (*instanceStats).me() string
+                    # /home/username/go/src/myProject/watchdog/main.go:84.5-84.17: reference to func StartUpClient()
+                    else:
+                        package = "-u "+self.local_package
+                        parts[4] = cleanPackageAddr(parts[4]).split(".")
+                        identifier = '.'.join(parts[4])
+
             elif goType == 'method':
 
-                parts[5] = cleanPackageAddr(parts[5].split('(')[1])
+                parts[5] = parts[5].split('(')[1]
 
+                # /home/username/go/src/myProject/watchdog/main.go:78.10-78.17: reference to method func (*myProject/utils/global.Instance).ExitBool(returnErrorCodePtr *bool)
                 if '/' in parts[5]:
-                    parts[5] = parts[5].split(".")
+                    parts[5] = cleanPackageAddr(parts[5]).split(".")
                     package = parts[5][0]
                     identifier = '.'.join(parts[5][1:])
                 else:
-                    parts[5] = parts[5].split(".")
-                    package = "-u "+self.local_package
-                    identifier = '.'.join(parts[5][1:])
+                    # /home/username/go/src/myProject/watchdog/main.go:151.4-151.7: reference to method func (*sync.Mutex).Lock()
+                    if '.' in parts[5].split(')')[0]:
+                        parts[5] = cleanPackageAddr(parts[5]).split(".")
+                        package = parts[5][0]
+                        identifier = '.'.join(parts[5][1:])
+                    # /home/username/go/src/myProject/watchdog/main.go:200.18-200.19: reference to method func (*instanceStats).me() string
+                    else:
+                        parts[5] = parts[5].split(".")
+                        package = "-u "+self.local_package
+                        identifier = '.'.join(parts[5][1:])
 
             elif goType == 'interface':
                 # /home/username/go/src/myProject/utils/global/global.go:238.16-238.19: reference to interface method func (myProject/utils/crypto.GenericKeyHolder).Init(
