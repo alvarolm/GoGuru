@@ -111,16 +111,12 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                     self.write_out(None, "'gs_doc' failed,\nsearching documentation with 'goguru mode=godoc'...")
                 sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ? 
                 mode = "describe"
-<<<<<<< HEAD
             elif mode == "godoc_direct":
                 def messageLookingDoc():
                     self.write_out(None, "'searching documentation with 'goguru mode=godoc_direct'...")
                 sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ? 
                 mode = "describe"
-            self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)                
-=======
             self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)
->>>>>>> a37614c4ce9a19e1980a3858cd729c9ddbc8f541
             return
 
         # Get the guru mode from the user.
