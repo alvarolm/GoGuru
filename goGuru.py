@@ -111,12 +111,16 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                     self.write_out(None, "'gs_doc' failed,\nsearching documentation with 'goguru mode=godoc'...")
                 sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ? 
                 mode = "describe"
+<<<<<<< HEAD
             elif mode == "godoc_direct":
                 def messageLookingDoc():
                     self.write_out(None, "'searching documentation with 'goguru mode=godoc_direct'...")
                 sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ? 
                 mode = "describe"
             self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)                
+=======
+            self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)
+>>>>>>> a37614c4ce9a19e1980a3858cd729c9ddbc8f541
             return
 
         # Get the guru mode from the user.
@@ -350,18 +354,21 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         if len(guru_scope) > 0:
             guru_scope = "-scope "+guru_scope
 
+        guru_tags = "-tags \""+" ".join(get_setting("goguru_tags", ""))+"\""
+
         guru_json = ""
         if get_setting("goguru_json", False):
             guru_json = "-json"
 
         # Build guru cmd.
-        cmd = "%(toolpath)s %(scope)s %(guru_json)s %(mode)s %(file_path)s:%(pos)s" % {
+        cmd = "%(toolpath)s %(scope)s %(tags)s %(guru_json)s %(mode)s %(file_path)s:%(pos)s" % {
         "toolpath": toolpath,
         "file_path": file_path,
         "pos": pos,
         "guru_json": guru_json,
         "mode": mode,
-        "scope": guru_scope} 
+        "scope": guru_scope,
+        "tags": guru_tags}
         debug("cmd", cmd)
 
         sublime.set_timeout_async(lambda: self.runInThread(cmd, callback, cmd_env), 0)
