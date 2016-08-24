@@ -19,7 +19,7 @@ https://github.com/alvarolm/GoGuru/issues
 
 http://alvarolm.github.io/GoGuru 
 
-**If just GoGuru doesn't seems to be working,
+**If it doesn't seems to be working,
 restart sublime and try again ** 
 
 ;-)
