@@ -10,17 +10,27 @@ go get golang.org/x/tools/cmd/guru
 
 # TODO: review & clean
 
-import sublime, sublime_plugin, subprocess, time, re, os, subprocess, sys
+
+import sublime
+import sublime_plugin
+import re
+import os
+import subprocess
+import sys
+
 
 def log(*msg):
     print("GoGuru:", msg[0:])
+
 
 def debug(*msg):
     if get_setting("goguru_debug", False):
         print("GoGuru [DEBUG]:", msg[0:])
 
+
 def error(*msg):
         print("GoGuru [ERROR]:", msg[0:])
+
 
 def plugin_loaded():
     # load shellenv
@@ -32,13 +42,13 @@ def plugin_loaded():
     if get_setting("goguru_use_golangconfig", False):
         try:
             global golangconfig
-            import golangconfig    
+            import golangconfig
         except:
             error("couldn't import golangconfig:", sys.exc_info()[0])
             log("using shellenv instead of golangconfig")
-            use_golangconfig = False
+            # use_golangconfig = False
             load_shellenv()
-        
+
     else:
         load_shellenv()
 
@@ -51,16 +61,15 @@ def plugin_loaded():
         p = subprocess.Popen(["git", "describe", "master", "--tags"], stdout=subprocess.PIPE, cwd=PluginPath)
         GITVERSION = p.communicate()[0].decode("utf-8").rstrip()
         if p.returncode != 0:
-             debug("git return code", p.returncode)
-             raise Exception("git return code", p.returncode) 
-
+            debug("git return code", p.returncode)
+            raise Exception("git return code", p.returncode)
 
         defsettings = os.path.join(PluginPath, 'Default.sublime-settings')
-        f = open(defsettings,'r')
+        f = open(defsettings, 'r')
         filedata = f.read()
         f.close()
-        newdata = filedata.replace(get_setting('goguru_version'), GITVERSION+'_')
-        f = open(defsettings,'w')
+        newdata = filedata.replace(get_setting('goguru_version'), GITVERSION + '_')
+        f = open(defsettings, 'w')
         f.write(newdata)
         f.close()
     except:
@@ -75,12 +84,15 @@ def plugin_loaded():
         us.set('goguru_debug', get_setting("goguru_debug", False))
         sublime.save_settings("GoGuru.sublime-settings")
 
+
 class GoGuruCommand(sublime_plugin.TextCommand):
+
     def __init__(self, view):
-        self.view = view 
+        self.view = view
         self.mode = 'None'
         self.env = 'None'
         self.local_package = 'None'
+
     def run(self, edit, mode=None):
 
         try:
@@ -89,8 +101,8 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             cb_map = self.get_map(text)
             byte_end = cb_map[sorted(cb_map.keys())[-1]]
             byte_begin = None
-            if not region.empty(): 
-                byte_begin = cb_map[region.begin()-1]
+            if not region.empty():
+                byte_begin = cb_map[region.begin() - 1]
         except:
             sublime.error_message('GoGuru:\nCouldn\'t get cursor positon, make sure that the Go source file is saved and the cursor is over the identifier (variable, function ...) you want to query.')
             error("couldn't get cursor positon: ", sys.exc_info())
@@ -104,24 +116,25 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             if mode == "godoc":
                 self.view.window().run_command('gs_doc', {'mode': "hint"})
                 gsdoc = self.view.window().find_output_panel('GsDoc-output-output')
-                if gsdoc != None:
-                    if not 'no docs found' in gsdoc.substr(gsdoc.line(0)):
+                if gsdoc is not None:
+                    if 'no docs found' not in gsdoc.substr(gsdoc.line(0)):
                         return
+
                 def messageLookingDoc():
                     self.write_out(None, "'gs_doc' failed,\nsearching documentation with 'goguru mode=godoc'...")
-                sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ? 
+                sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ?
                 mode = "describe"
             elif mode == "godoc_direct":
                 def messageLookingDoc():
                     self.write_out(None, "'searching documentation with 'goguru mode=godoc_direct'...")
-                sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ? 
+                sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ?
                 mode = "describe"
             self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)
             return
 
         # Get the guru mode from the user.
-        modes = ["callees","callers","callstack","definition","describe","freevars","implements","peers","pointsto","referrers","what","whicherrs"]
-        descriptions  = [
+        modes = ["callees", "callers", "callstack", "definition", "describe", "freevars", "implements", "peers", "pointsto", "referrers", "what", "whicherrs"]
+        descriptions = [
             "callees     show possible targets of selected function call",
             "callers     show possible callers of selected function",
             "callstack   show path from callgraph root to selected function",
@@ -137,7 +150,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
         # Call guru cmd with the given mode.
         def on_done(i):
-            if i >= 0 :
+            if i >= 0:
                 self.write_running(modes[i])
 
                 self.guru(byte_end, begin_offset=byte_begin, mode=modes[i], callback=self.guru_complete)
@@ -160,7 +173,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         view.run_command('go_guru_write_running', {'mode': mode})
 
         if get_setting("goguru_output", "buffer") == "output_panel":
-            window.run_command('show_panel', {'panel': "output." + view.name(), 'toggle': False } )
+            window.run_command('show_panel', {'panel': "output." + view.name(), 'toggle': False})
         else:
             window.focus_view(view)
 
@@ -168,7 +181,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         """ Write the guru output to a new file.
         """
 
-        def cleanPackageAddr (p):
+        def cleanPackageAddr(p):
             return str(p).replace('"', '').replace('(', '').replace(')', '').replace('*', '')
 
         window = self.view.window()
@@ -176,7 +189,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
         # parse guru describe to query go doc
         jump = False
-        if (self.mode == 'godoc' or self.mode == 'godoc_direct') and  result:
+        if (self.mode == 'godoc' or self.mode == 'godoc_direct') and result:
             parts = result.split()
 
             definitionLine = result.split('\n')[1]
@@ -184,8 +197,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
             package = ''
             identifier = ''
-            subparts = []
-            
+
             debug('godoc', 'goType', goType)
             if goType == 'package':
                     # /home/username/go/src/myProject/utils/global/global.go:104.24-104.29: reference to package "errors"
@@ -205,7 +217,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
                     # /home/username/go/src/myProject/watchdog/main.go:84.5-84.17: reference to func StartUpClient()
                     else:
-                        package = "-u "+self.local_package
+                        package = "-u " + self.local_package
                         parts[4] = cleanPackageAddr(parts[4]).split(".")
                         identifier = '.'.join(parts[4])
 
@@ -227,7 +239,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                     # /home/username/go/src/myProject/watchdog/main.go:200.18-200.19: reference to method func (*instanceStats).me() string
                     else:
                         parts[5] = parts[5].split(".")
-                        package = "-u "+self.local_package
+                        package = "-u " + self.local_package
                         identifier = '.'.join(parts[5][1:])
 
             elif goType == 'interface':
@@ -245,10 +257,11 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
             if not jump:
                 cmd = "go doc %(package)s %(identifier)s " % {
-                "package": package,
-                "identifier": identifier} 
-                debug("godoc","cmd", cmd)
-       
+                    "package": package,
+                    "identifier": identifier,
+                }
+                debug("godoc", "cmd", cmd)
+
                 proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, env=self.env)
                 o, e = proc.communicate()
 
@@ -258,10 +271,10 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                 prettierResult = ''
                 for line in result.splitlines():
                     if line[0:4] == '    ':
-                        prettierResult += '//'+ line + '\n'
+                        prettierResult += '//' + line + '\n'
                     else:
                         prettierResult += line + '\n'
-                result = prettierResult+'\n'+definitionLine
+                result = '\n'.join(prettierResult, definitionLine)
                 err = e.decode('utf-8')
 
         # Run a new command to use the edit object for this view.
@@ -270,7 +283,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             'err': err})
 
         if get_setting("goguru_output", "buffer") == "output_panel":
-            window.run_command('show_panel', {'panel': "output." + view.name() })
+            window.run_command('show_panel', {'panel': "output." + view.name()})
         else:
             window.focus_view(view)
 
@@ -283,7 +296,6 @@ class GoGuruCommand(sublime_plugin.TextCommand):
                     group, _ = window.get_view_index(new_view)
                     if group != -1:
                         window.focus_group(group)
-            
 
     def get_map(self, chars):
         """ Generate a map of character offset to byte offset for the given string 'chars'.
@@ -305,7 +317,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
         pos = "#" + str(end_offset)
         if begin_offset is not None:
-            pos = "#%i,#%i" %(begin_offset, end_offset)
+            pos = "#%i,#%i" % (begin_offset, end_offset)
 
         file_path = self.view.file_name()
 
@@ -322,7 +334,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             toolpath = 'guru'
             cmd_env = shellenv.get_env(for_subprocess=True)[1]
             debug("cmd_env", cmd_env)
-            goguru_env = get_setting("goguru_env", {}) 
+            goguru_env = get_setting("goguru_env", {})
             debug("goguru_env", goguru_env)
             cmd_env.update(goguru_env)
 
@@ -337,20 +349,20 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         if useCurrentPackage:
             current_file_path = os.path.realpath(os.path.dirname(file_path))
             GOPATH = os.path.realpath(cmd_env["GOPATH"])
-            GOPATH = os.path.join(GOPATH,"src")
+            GOPATH = os.path.join(GOPATH, "src")
             local_package = os.path.relpath(current_file_path, GOPATH)
             if sublime.platform() == 'windows':
                 local_package = local_package.replace('\\', '/')
             debug("GOPATH", GOPATH)
             debug("local_package", local_package)
             self.local_package = local_package
-            guru_scope = guru_scope+','+local_package
+            guru_scope = guru_scope + ',' + local_package
         guru_scope = guru_scope.strip()
         debug("guru_scope", guru_scope)
         if len(guru_scope) > 0:
-            guru_scope = "-scope "+guru_scope
+            guru_scope = "-scope " + guru_scope
 
-        guru_tags = "-tags \""+" ".join(get_setting("goguru_tags", ""))+"\""
+        guru_tags = "-tags \"" + " ".join(get_setting("goguru_tags", "")) + "\""
 
         guru_json = ""
         if get_setting("goguru_json", False):
@@ -358,13 +370,14 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
         # Build guru cmd.
         cmd = "%(toolpath)s %(scope)s %(tags)s %(guru_json)s %(mode)s %(file_path)s:%(pos)s" % {
-        "toolpath": toolpath,
-        "file_path": file_path,
-        "pos": pos,
-        "guru_json": guru_json,
-        "mode": mode,
-        "scope": guru_scope,
-        "tags": guru_tags}
+            "toolpath": toolpath,
+            "file_path": file_path,
+            "pos": pos,
+            "guru_json": guru_json,
+            "mode": mode,
+            "scope": guru_scope,
+            "tags": guru_tags,
+        }
         debug("cmd", cmd)
 
         sublime.set_timeout_async(lambda: self.runInThread(cmd, callback, cmd_env), 0)
@@ -391,7 +404,7 @@ class GoGuruWriteResultsCommand(sublime_plugin.TextCommand):
             view.insert(edit, view.size(), err)
 
         view.insert(edit, view.size(), "\n\n\n")
-        
+
 
 class GoGuruWriteRunningCommand(sublime_plugin.TextCommand):
     """ Writes the guru output to the current view.
@@ -407,48 +420,50 @@ class GoGuruWriteRunningCommand(sublime_plugin.TextCommand):
 
 
 class GoGuruShowResultsCommand(sublime_plugin.TextCommand):
+
     def run(self, edit):
         if get_setting("goguru_output", "buffer") == "output_panel":
-            self.view.window().run_command('show_panel', {'panel': "output.GoGuru Output" })
+            self.view.window().run_command('show_panel', {'panel': "output.GoGuru Output"})
         else:
             output_view = get_output_view(self.view.window())
             self.view.window().focus_view(output_view)
 
 
 class GoGuruOpenResultCommand(sublime_plugin.EventListener):
+
     def on_selection_modified(self, view):
-      if view.name() == "GoGuru Output":
-        if len(view.sel()) != 1:
-            return
-        if view.sel()[0].size() == 0:
-            return
+        if view.name() == "GoGuru Output":
+            if len(view.sel()) != 1:
+                return
+            if view.sel()[0].size() == 0:
+                return
 
-        lines = view.lines(view.sel()[0])
-        if len(lines) != 1:
-            return
+            lines = view.lines(view.sel()[0])
+            if len(lines) != 1:
+                return
 
-        line = view.full_line(lines[0])
-        text = view.substr(line)
+            line = view.full_line(lines[0])
+            text = view.substr(line)
 
-        format = get_setting("guru_format")
+            # format = get_setting("guru_format")
 
-        # "filename:line:col" pattern for json
-        m = re.search("\"([^\"]+):([0-9]+):([0-9]+)\"", text)
+            # "filename:line:col" pattern for json
+            m = re.search("\"([^\"]+):([0-9]+):([0-9]+)\"", text)
 
-        # >filename:line:col< pattern for xml
-        if m == None:
-            m = re.search(">([^<]+):([0-9]+):([0-9]+)<", text)
+            # >filename:line:col< pattern for xml
+            if m is None:
+                m = re.search(">([^<]+):([0-9]+):([0-9]+)<", text)
 
-        # filename:line.col-line.col: pattern for plain
-        if m == None:
-            m = re.search("^(.+\.go):([0-9]+).([0-9]+)[-: ]", text)
-        
-        if m:
-            w = view.window()
-            new_view = w.open_file(m.group(1) + ':' + m.group(2) + ':' + m.group(3), sublime.ENCODED_POSITION)
-            group, index = w.get_view_index(new_view)
-            if group != -1:
-                w.focus_group(group)
+            # filename:line.col-line.col: pattern for plain
+            if m is None:
+                m = re.search("^(.+\.go):([0-9]+).([0-9]+)[-: ]", text)
+
+            if m:
+                w = view.window()
+                new_view = w.open_file(m.group(1) + ':' + m.group(2) + ':' + m.group(3), sublime.ENCODED_POSITION)
+                group, index = w.get_view_index(new_view)
+                if group != -1:
+                    w.focus_group(group)
 
 
 def get_output_view(window):
@@ -476,14 +491,15 @@ def get_output_view(window):
 
     return view
 
+
 def get_setting(key, default=None):
-    """ Returns the setting in the following hierarchy: project setting, user setting, 
+    """ Returns the setting in the following hierarchy: project setting, user setting,
     default setting.  If none are set the 'default' value passed in is returned.
     """
 
     val = None
     try:
-       val = sublime.active_window().active_view().settings().get('GoGuru', {}).get(key)
+        val = sublime.active_window().active_view().settings().get('GoGuru', {}).get(key)
     except AttributeError:
         pass
 
