@@ -1,0 +1,12 @@
+[
+    {
+        "button": "button2",
+        "modifiers": ["ctrl"],
+        "press_command": "drag_select",
+        "command": "go_guru",
+        "args": {
+            "mode": "definition",
+            "output": false
+        },
+    },
+]
