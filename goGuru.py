@@ -93,8 +93,11 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         self.env = 'None'
         self.local_package = 'None'
 
-    def run(self, edit, mode=None):
-
+    def run(self, edit, mode=None, output=True):
+        """
+        :param output: won't show the show_panel if set to False. It is particularly useful for mouse clicks.
+        """
+        self.output = output
         try:
             region = self.view.sel()[0]
             text = self.view.substr(sublime.Region(0, region.end()))
@@ -122,12 +125,12 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
                 def messageLookingDoc():
                     self.write_out(None, "'gs_doc' failed,\nsearching documentation with 'goguru mode=godoc'...")
-                sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ?
+                sublime.set_timeout(lambda: messageLookingDoc(), 150)  # any other choice besides timeout ?
                 mode = "describe"
             elif mode == "godoc_direct":
                 def messageLookingDoc():
                     self.write_out(None, "'searching documentation with 'goguru mode=godoc_direct'...")
-                sublime.set_timeout(lambda: messageLookingDoc(), 150) # any other choice besides timeout ?
+                sublime.set_timeout(lambda: messageLookingDoc(), 150)  # any other choice besides timeout ?
                 mode = "describe"
             self.guru(byte_end, begin_offset=byte_begin, mode=mode, callback=self.guru_complete)
             return
@@ -171,8 +174,7 @@ class GoGuruCommand(sublime_plugin.TextCommand):
 
         # Run a new command to use the edit object for this view.
         view.run_command('go_guru_write_running', {'mode': mode})
-
-        if get_setting("goguru_output", "buffer") == "output_panel":
+        if get_setting("goguru_output", "buffer") == "output_panel" and self.output:
             window.run_command('show_panel', {'panel': "output." + view.name(), 'toggle': False})
         else:
             window.focus_view(view)
@@ -282,13 +284,21 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             'result': result,
             'err': err})
 
-        if get_setting("goguru_output", "buffer") == "output_panel":
+        if get_setting("goguru_output", "buffer") == "output_panel" and self.output:
             window.run_command('show_panel', {'panel': "output." + view.name()})
         else:
             window.focus_view(view)
 
+        # the case when clicking doesn't require showing the output
+        if self.mode == 'definition' and not self.output:
+            if result:
+                coordinates = result.split(':')[:3]
+                new_view = window.open_file(':'.join(coordinates), sublime.ENCODED_POSITION)
+                group, _ = window.get_view_index(new_view)
+                if group != -1:
+                    window.focus_group(group)
         # jump to definition if is set
-        if self.mode == 'definition':
+        elif self.mode == 'definition':
             if get_setting("goguru_jumpto_definition", False):
                 if result:
                     coordinates = result.split(':')[:3]
@@ -464,6 +474,12 @@ class GoGuruOpenResultCommand(sublime_plugin.EventListener):
                 group, index = w.get_view_index(new_view)
                 if group != -1:
                     w.focus_group(group)
+
+
+class GoGuruGotoDefinitionCommand(GoGuruCommand):
+
+    def run(self, edit, mode=None, output=True):
+        super().run(edit=edit, mode="definition", output=False)
 
 
 def get_output_view(window):
