@@ -86,6 +86,13 @@
         }
     },
     {
+        "caption": "GoGuru: whicherrs",
+        "command": "go_guru",
+        "args": {
+            "mode": "whicherrs"
+        }
+    },
+    {
         "caption": "GoGuru: referrers",
         "command": "go_guru",
         "args": {
