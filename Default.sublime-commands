@@ -107,13 +107,6 @@
         }
     },
     {
-        "caption": "GoGuru: callgraph",
-        "command": "go_guru",
-        "args": {
-            "mode": "callgraph"
-        }
-    },
-    {
         "caption": "GoGuru: Default Settings",
         "command": "open_file",
         "args": {
