@@ -6,9 +6,9 @@ GoGuru is a Golang plugin for [SublimeText](http://www.sublimetext.com/) 3 that 
 
 Please report any issues or improvements here [https://github.com/alvarolm/GoGuru/issues](https://github.com/alvarolm/GoGuru/issues)
 
-based on previus work from [waigani](http://github.com/waigani/GoOracle).
+based on previous work from [waigani](http://github.com/waigani/GoOracle).
 
-the guru tool still is on developent,
+the guru tool still is on development,
 check out the plan, the official git repo and the code review if you want to keep up:
 * https://docs.google.com/document/d/1UErU12vR7jTedYvKHVNRzGPmXqdMASZ6PfE7B-p6sIg/edit#
 * https://go.googlesource.com/tools/+log/master/cmd/guru
@@ -37,6 +37,8 @@ Select, or place your cursor over, a symbol (function, variable, constant etc) a
 
 Select one of the modes and the output will be displayed in a new tab.
 **double click on the file name in the results to jump directly to it.**
+
+You also can hold the `ctrl` key and `right-click` on a symbol to jump right to the definition.
 
 Install
 -------
@@ -111,6 +113,7 @@ Default key binding:
 [
     { "keys": ["ctrl+shift+g"], "command": "go_guru"},
     { "keys": ["ctrl+alt+shift+g"], "command": "go_guru_show_results"},
+    { "keys": ["ctrl+.+ctrl+g"], "command": "go_guru_goto_definition", "context": [{ "key": "selector", "operator": "equal", "operand": "source.go" }] },
 ]
 ```
 
@@ -123,7 +126,25 @@ You can also set a key binding for a specific mode by adding a "mode" arg, e.g.:
     { "keys": ["ctrl+super+c"], "command": "go_guru", "args": {"mode": "callers"} },
     { "keys": ["ctrl+super+i"], "command": "go_guru", "args": {"mode": "implements"} },
     { "keys": ["ctrl+super+r"], "command": "go_guru", "args": {"mode": "referrers"} },
+    { "keys": ["ctrl+.+ctrl+g"], "command": "go_guru", "args": {"mode": "definition", output=false}},
     ...
+```
+
+Default mouse bindings:
+
+```javascript
+[
+    {
+        "button": "button2",
+        "modifiers": ["ctrl"],
+        "press_command": "drag_select",
+        "command": "go_guru",
+        "args": {
+            "mode": "definition",
+            "output": false
+        },
+    },
+]
 ```
 
 

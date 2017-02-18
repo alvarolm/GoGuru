@@ -1,6 +1,7 @@
 [
     { "keys": ["ctrl+shift+g"], "command": "go_guru"},
-    { "keys": ["ctrl+alt+shift+g"], "command": "go_guru_show_results"}
+    { "keys": ["ctrl+alt+shift+g"], "command": "go_guru_show_results"},
+    { "keys": ["ctrl+.+ctrl+g"], "command": "go_guru_goto_definition", "context": [{ "key": "selector", "operator": "equal", "operand": "source.go" }] },
 ]
 /*
 	You can also set a key binding for a specific mode by adding a "mode" arg, e.g.:
@@ -8,6 +9,7 @@
     { "keys": ["ctrl+super+c"], "command": "go_guru", "args": {"mode": "callers"} },
     { "keys": ["ctrl+super+i"], "command": "go_guru", "args": {"mode": "implements"} },
     { "keys": ["ctrl+super+r"], "command": "go_guru", "args": {"mode": "referrers"} },
+    { "keys": ["ctrl+.+ctrl+g"], "command": "go_guru", "args": {"mode": "definition", output=false}},
     ...
 	please set this in your user keybinds, no here.
 */
