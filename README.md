@@ -100,8 +100,8 @@ You can also make project specific settings. First save your current workspace a
     "settings":
     {
         "GoGuru": {
-            "guru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"],
-            "output": "output_panel"
+            "goguru_scope": ["github.com/juju/juju/cmd/juju", "github.com/juju/juju/cmd/jujud"],
+            "goguru_output": "output_panel"
         }
     },
 }
