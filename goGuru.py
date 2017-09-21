@@ -329,7 +329,6 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         if begin_offset is not None:
             pos = "#%i,#%i" % (begin_offset, end_offset)
 
-        file_path = self.view.file_name()
 
         # golang config or shellenv ?
         cmd_env = ''
@@ -356,17 +355,19 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         # add local package to guru scope
         useCurrentPackage = get_setting("goguru_use_current_package", True)
         debug("goguru_use_current_package", useCurrentPackage)
+        file_path = self.view.file_name()
+
         if useCurrentPackage:
-            current_file_path = os.path.realpath(os.path.dirname(file_path))
             GOPATH = os.path.realpath(cmd_env["GOPATH"])
-            GOPATH = os.path.join(GOPATH, "src")
-            local_package = os.path.relpath(current_file_path, GOPATH)
+            debug("GOPATH", GOPATH)
+
+            local_package = get_local_package(GOPATH, file_path)
+            debug("local_package", local_package)
             if sublime.platform() == 'windows':
                 local_package = local_package.replace('\\', '/')
-            debug("GOPATH", GOPATH)
-            debug("local_package", local_package)
             self.local_package = local_package
             guru_scope = guru_scope + ',' + local_package
+
         guru_scope = guru_scope.strip()
         debug("guru_scope", guru_scope)
         if len(guru_scope) > 0:
@@ -512,17 +513,29 @@ def get_setting(key, default=None):
     """ Returns the setting in the following hierarchy: project setting, user setting,
     default setting.  If none are set the 'default' value passed in is returned.
     """
+    project_settings = sublime.active_window().active_view().settings().get('GoGuru', {})
+    if key in project_settings:
+        return project_settings.get(key)
 
-    val = None
-    try:
-        val = sublime.active_window().active_view().settings().get('GoGuru', {}).get(key)
-    except AttributeError:
-        pass
+    user_settings = sublime.load_settings("GoGuru.sublime-settings")
+    if user_settings.has(key):
+        return user_settings.get(key)
 
-    if not val:
-        val = sublime.load_settings("GoGuru.sublime-settings").get(key)
-    if not val:
-        val = sublime.load_settings("Default.sublime-settings").get(key)
-    if not val:
-        val = default
-    return val
+    return sublime.load_settings("Default.sublime-settings").get(key, default)
+
+
+def get_local_package(GOPATH, file_path):
+    """
+    Returns the local package name based on file_path.
+    Rational: the GOPATH is usually composed of multiple paths separated
+    by ":". The idea is to check the first one that matches the file_path
+    to get the package name.
+    """
+    current_file_path = os.path.realpath(os.path.dirname(file_path))
+    for path in GOPATH.split(":"):
+        guessing_path = os.path.join(path, "src")
+        if file_path.startswith(guessing_path):
+            return os.path.relpath(current_file_path, guessing_path)
+
+    # the GOPATH and the file in question are not aligned
+    return ""
