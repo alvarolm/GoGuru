@@ -32,7 +32,7 @@
 	"guru_tags": [],
 
 	// env overwrites the default shell environment vars
-	// e.g "env": { "GOPATH": "$HOME/go/bin:$PATH" }
+	// e.g "env": { "GOPATH": "$HOME/go" }
 	// not used when use_golangconfig is set to true
 	"env": {},
 }
