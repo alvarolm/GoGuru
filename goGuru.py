@@ -380,26 +380,25 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             guru_json = "-json"
 
         # Build guru cmd.
-        # quick messy -modified update 22/10/2019 (DD/MM/YYYY)
+        # modified update 22/10/2019 - 1 (DD/MM/YYYY)
         contents = self.view.substr(sublime.Region(0, self.view.size()))
-        contents_size = self.view.size()
-        cmd = "%(toolpath)s -modified %(scope)s %(tags)s %(guru_json)s %(mode)s %(file_path)s:%(pos)s <<CSTDIN000\n%(file_path)s\n%(contents_size)s\n%(contents)sCSTDIN000" % {
+        contents_size = str(self.view.size())
+        cmd = "%(toolpath)s -modified %(scope)s %(tags)s %(guru_json)s %(mode)s %(file_path)s:%(pos)s" % {
             "toolpath": toolpath,
             "file_path": file_path,
             "pos": pos,
             "guru_json": guru_json,
             "mode": mode,
             "scope": guru_scope,
-            "tags": guru_tags,
-            "contents_size": contents_size,
-            "contents": contents,
+            "tags": guru_tags
         }
         debug("cmd", cmd)
 
-        sublime.set_timeout_async(lambda: self.runInThread(cmd, callback, cmd_env), 0)
+        sublime.set_timeout_async(lambda: self.runInThread(cmd, callback, cmd_env, contents, contents_size, file_path), 0)
 
-    def runInThread(self, cmd, callback, env):
+    def runInThread(self, cmd, callback, env, contents, contents_size, file_path):
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, env=env)
+        proc.stdin.write(bytes(file_path+'\n'+contents_size+'\n'+contents, encoding='utf8'))
         out, err = proc.communicate()
         callback(out.decode('utf-8'), err.decode('utf-8'))
 
