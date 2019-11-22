@@ -380,7 +380,10 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             guru_json = "-json"
 
         # Build guru cmd.
-        cmd = "%(toolpath)s %(scope)s %(tags)s %(guru_json)s %(mode)s %(file_path)s:%(pos)s" % {
+        # quick messy -modified update 22/10/2019 (DD/MM/YYYY)
+        contents = self.view.substr(sublime.Region(0, self.view.size()))
+        contents_size = self.view.size()
+        cmd = "%(toolpath)s -modified %(scope)s %(tags)s %(guru_json)s %(mode)s %(file_path)s:%(pos)s <<CSTDIN000\n%(file_path)s\n%(contents_size)s\n%(contents)sCSTDIN000" % {
             "toolpath": toolpath,
             "file_path": file_path,
             "pos": pos,
@@ -388,6 +391,8 @@ class GoGuruCommand(sublime_plugin.TextCommand):
             "mode": mode,
             "scope": guru_scope,
             "tags": guru_tags,
+            "contents_size": contents_size,
+            "contents": contents,
         }
         debug("cmd", cmd)
 
