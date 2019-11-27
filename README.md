@@ -155,14 +155,6 @@ GoGuru relies on the guru tool. You must install it in order for GoGuru to work.
 `go get -u golang.org/x/tools/cmd/guru`
 
 
-About Go Guru
----------------
-
-- [User Manual](https://docs.google.com/document/d/1SLk36YRjjMgKqe490mSRzOPYEDe0Y_WQNRv-EiFYUyw/view#)
-- [Design Document](https://docs.google.com/a/canonical.com/document/d/1WmMHBUjQiuy15JfEnT8YBROQmEv-7K6bV-Y_K53oi5Y/edit#heading=h.m6dk5m56ri4e)
-- [GoDoc](https://godoc.org/golang.org/x/tools/cmd/oracle)
-
-
 Copyright, License & Contributors
 =================================
 

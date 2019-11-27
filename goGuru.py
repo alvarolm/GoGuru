@@ -358,7 +358,11 @@ class GoGuruCommand(sublime_plugin.TextCommand):
         file_path = self.view.file_name()
 
         if useCurrentPackage:
-            GOPATH = os.path.realpath(cmd_env["GOPATH"])
+            try:
+                GOPATH = os.path.realpath(cmd_env["GOPATH"])
+            except:
+                log("WARNING: using default GOPATH since it isn't declared ($HOME/go)")
+                GOPATH = os.path.expanduser("~/go")
             debug("GOPATH", GOPATH)
 
             local_package = get_local_package(GOPATH, file_path)
