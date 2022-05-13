@@ -152,6 +152,10 @@ Dependencies
 ------------
 GoGuru relies on the guru tool. You must install it in order for GoGuru to work. Run the following on your command line:
 
+### Go 1.16+
+`go install golang.org/x/tools/cmd/guru@latest`
+
+### Go version < 1.16
 `go get -u golang.org/x/tools/cmd/guru`
 
 
